@@ -75,15 +75,15 @@ namespace AudioMixerApp
             // 
             // volumnTrackbar
             // 
-            this.volumnTrackbar.AutoSize = false;
             this.volumnTrackbar.BackColor = System.Drawing.SystemColors.Control;
             this.volumnTrackbar.Cursor = System.Windows.Forms.Cursors.Default;
             this.volumnTrackbar.Location = new System.Drawing.Point(10, 3);
-            this.volumnTrackbar.Maximum = 20;
+            this.volumnTrackbar.Maximum = 100;
             this.volumnTrackbar.Name = "volumnTrackbar";
             this.volumnTrackbar.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.volumnTrackbar.Size = new System.Drawing.Size(51, 275);
+            this.volumnTrackbar.Size = new System.Drawing.Size(56, 275);
             this.volumnTrackbar.TabIndex = 1;
+            this.volumnTrackbar.TickFrequency = 5;
             this.volumnTrackbar.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.volumnTrackbar.Scroll += new System.EventHandler(this.volumnTrackbar_Scroll);
             // 
@@ -97,11 +97,12 @@ namespace AudioMixerApp
             this.Controls.Add(this.playIcon);
             this.Name = "Deck";
             this.Size = new System.Drawing.Size(75, 479);
-            this.Load += new System.EventHandler(this.Deck_Load);
+            this.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.Deck_ControlRemoved);
             ((System.ComponentModel.ISupportInitialize)(this.pauseIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.volumnTrackbar)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

@@ -1,7 +1,7 @@
 ﻿
 namespace AudioMixerApp
 {
-    partial class MainForm
+    partial class mainForm
     {
         /// <summary>
         /// 設計工具所需的變數。
@@ -35,6 +35,7 @@ namespace AudioMixerApp
             // 
             // deck1
             // 
+            this.deck1.Id = 0;
             this.deck1.Location = new System.Drawing.Point(0, 0);
             this.deck1.Name = "deck1";
             this.deck1.Size = new System.Drawing.Size(75, 479);
@@ -42,12 +43,13 @@ namespace AudioMixerApp
             // 
             // deck2
             // 
+            this.deck2.Id = 0;
             this.deck2.Location = new System.Drawing.Point(81, 0);
             this.deck2.Name = "deck2";
             this.deck2.Size = new System.Drawing.Size(75, 479);
             this.deck2.TabIndex = 1;
             // 
-            // MainForm
+            // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -55,7 +57,7 @@ namespace AudioMixerApp
             this.Controls.Add(this.deck2);
             this.Controls.Add(this.deck1);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.Name = "MainForm";
+            this.Name = "mainForm";
             this.Text = "AudioMixer";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);

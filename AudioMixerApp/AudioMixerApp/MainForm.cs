@@ -7,14 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio.Wave.SampleProviders;
+using NAudio.Wave;
 
 namespace AudioMixerApp
 {
-    public partial class MainForm : Form
+    public partial class mainForm : Form
     {
-        public MainForm()
+
+        public mainForm()
         {
             InitializeComponent();
+            deck1.Id = 0;
+            deck2.Id = 1;
         }
 
         private void MainForm_Load(object sender, EventArgs e)

@@ -58,6 +58,23 @@ namespace AudioPlayerApp
         
         public AudioPlayerState State { get; private set; }
 
+        public TimeSpan Duration
+        {
+            get { return audioDecoder.Duration; }
+        }
+
+        public TimeSpan Position
+        {
+            get { return playPosition; }
+            set {
+                playPosition = value;
+                nextPlayPosition = value;
+                playPositionStart = value;
+                clock.Restart();
+                playCounter++;
+            }
+        }
+
         public bool IsRepeating { get; set; }
 
         public AudioPlayer(XAudio2 xaudio2, Stream audioStream)
@@ -197,8 +214,7 @@ namespace AudioPlayerApp
                     }
 
                     // If the song is not looping (by default), then stop the audio player.
-                    if (endOfSong && !IsRepeating && State == AudioPlayerState.Playing)
-                    {
+                    if (endOfSong && !IsRepeating && State == AudioPlayerState.Playing) {
                         Stop();
                     }
                 }

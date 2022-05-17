@@ -97,6 +97,7 @@ namespace AudioMixerApp
             this.Controls.Add(this.playIcon);
             this.Name = "Deck";
             this.Size = new System.Drawing.Size(75, 479);
+            this.Load += new System.EventHandler(this.Deck_Load);
             this.ControlRemoved += new System.Windows.Forms.ControlEventHandler(this.Deck_ControlRemoved);
             ((System.ComponentModel.ISupportInitialize)(this.pauseIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playIcon)).EndInit();

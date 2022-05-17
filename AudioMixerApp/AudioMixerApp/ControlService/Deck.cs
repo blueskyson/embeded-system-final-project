@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows.Forms;
 using AudioPlayerApp;
 
@@ -16,11 +17,15 @@ using SharpDX.IO;
 using SharpDX.MediaFoundation;
 using SharpDX.XAudio2;
 
+using NAudio.Wave;
+
+
 namespace AudioMixerApp
 {
     public partial class Deck : UserControl
     {
-        public int Id { get; set; }
+        public InfoCard infoCard { get; set; }
+        private DispatcherTimer timer;
 
         private XAudio2 xaudio2;
         private MasteringVoice masteringVoice;
@@ -31,7 +36,13 @@ namespace AudioMixerApp
         public Deck()
         {
             InitializeComponent();
-            InitializeXAudio2();
+
+            // This is mandatory when using any of SharpDX.MediaFoundation classes
+            MediaManager.Startup();
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(5);
+            timer.Tick += timer_Tick;
         }
 
         private void volumnTrackbar_Scroll(object sender, EventArgs e)
@@ -43,12 +54,6 @@ namespace AudioMixerApp
                     audioPlayer.Volume = volume;
                 }
             }
-        }
-
-        private void InitializeXAudio2()
-        {
-            // This is mandatory when using any of SharpDX.MediaFoundation classes
-            MediaManager.Startup();
         }
 
         private void loadButton_Click(object sender, EventArgs e)
@@ -93,6 +98,9 @@ namespace AudioMixerApp
                             return;
                         }
                         audioPlayer = new AudioPlayer(xaudio2, fileStream);
+
+                        // Draw infoCard
+                        infoCard.LoadWaveStream(dialog.FileName);
                     }
                 } finally {
                     playIcon.Image = Properties.Resources.play;
@@ -110,6 +118,7 @@ namespace AudioMixerApp
                     var volume = (float)volumnTrackbar.Value / volumnTrackbar.Maximum;
                     audioPlayer.Volume = volume;
                     audioPlayer.Play();
+                    timer.Start();
                     playIcon.Image = Properties.Resources.play2;
                     pauseIcon.Image = Properties.Resources.pause;
                 }
@@ -122,6 +131,7 @@ namespace AudioMixerApp
             lock (lockAudio) {
                 if (audioPlayer != null) {
                     audioPlayer.Pause();
+                    timer.Stop();
                     playIcon.Image = Properties.Resources.play;
                     pauseIcon.Image = Properties.Resources.pause2;
                 }
@@ -133,6 +143,20 @@ namespace AudioMixerApp
         {
             Utilities.Dispose(ref masteringVoice);
             Utilities.Dispose(ref xaudio2);
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            lock (lockAudio) {
+                if (audioPlayer != null) {
+                    infoCard.UpdateWaveForm(audioPlayer.Position);
+                }
+            }
+        }
+
+        private void Deck_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

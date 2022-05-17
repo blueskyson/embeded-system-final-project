@@ -150,6 +150,11 @@ namespace AudioMixerApp
             lock (lockAudio) {
                 if (audioPlayer != null) {
                     infoCard.UpdateWaveForm(audioPlayer.Position, audioPlayer.Progress);
+                    if (audioPlayer.State == AudioPlayerState.Stopped) {
+                        timer.Stop();
+                        playIcon.Image = Properties.Resources.play;
+                        pauseIcon.Image = Properties.Resources.pause2;
+                    }
                 }
             }
         }

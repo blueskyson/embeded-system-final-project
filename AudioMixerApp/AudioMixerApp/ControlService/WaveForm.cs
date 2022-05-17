@@ -69,7 +69,9 @@ namespace AudioMixerApp.ControlService
                     startOffset = 0;
                 }
 
-                waveStream.Position = startPosition + (e.ClipRectangle.Left * bytesPerSample * samplesPerPixel);
+                // Set start position of audio stream to read
+                waveStream.Position = startPosition + (bytesPerSample * samplesPerPixel);
+                
                 byte[] waveData = new byte[samplesPerPixel * bytesPerSample];
 
                 for (float x = e.ClipRectangle.X + startOffset; x < e.ClipRectangle.Right; x += 1) {

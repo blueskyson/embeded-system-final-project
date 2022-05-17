@@ -75,6 +75,11 @@ namespace AudioPlayerApp
             }
         }
 
+        public double Progress
+        {
+            get { return Position.TotalMilliseconds / Duration.TotalMilliseconds; }
+        }
+
         public bool IsRepeating { get; set; }
 
         public AudioPlayer(XAudio2 xaudio2, Stream audioStream)

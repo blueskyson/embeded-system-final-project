@@ -51,8 +51,8 @@ namespace AudioMixerApp.ControlService
             set { startPosition = value; }
         }
 
-        public void DrawWave(TimeSpan time) {
-            currentPosition += 1;
+        public void DrawWave(double progress) {
+            currentPosition = Convert.ToInt64(waveStream.Length * progress);
             this.Invalidate();
         }
 

@@ -27,24 +27,21 @@ namespace AudioMixerApp
             InitializeComponent();
         }
 
-        public void LoadWaveStream(String path)
+        public void LoadWaveStream(String path, TimeSpan duration)
         {
+            durationLabel.Text = FormatTimeSpan(duration);
             waveform.WaveStream = new WaveFileReader(path);
         }
 
-        public void UpdateWaveForm(TimeSpan time)
+        public void UpdateWaveForm(TimeSpan time, double progress)
         {
-            timeLabel.Text = time.ToString("mm':'ss':'ff");
-            //waveform.DrawWave(time);
+            timeLabel.Text = FormatTimeSpan(time);
+            waveform.DrawWave(progress);
         }
 
         private static string FormatTimeSpan(TimeSpan time)
         {
-            var timeStr = time.ToString("c");
-            int index = timeStr.IndexOf('.');
-            if (index > 0)
-                timeStr = timeStr.Substring(0, index);
-            return timeStr;
+            return time.ToString("mm':'ss':'ff");
         }
     }
 }

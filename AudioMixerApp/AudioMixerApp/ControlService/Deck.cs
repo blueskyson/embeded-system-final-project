@@ -100,7 +100,7 @@ namespace AudioMixerApp
                         audioPlayer = new AudioPlayer(xaudio2, fileStream);
 
                         // Draw infoCard
-                        infoCard.LoadWaveStream(dialog.FileName);
+                        infoCard.LoadWaveStream(dialog.FileName, audioPlayer.Duration);
                     }
                 } finally {
                     playIcon.Image = Properties.Resources.play;
@@ -149,7 +149,7 @@ namespace AudioMixerApp
         {
             lock (lockAudio) {
                 if (audioPlayer != null) {
-                    infoCard.UpdateWaveForm(audioPlayer.Position);
+                    infoCard.UpdateWaveForm(audioPlayer.Position, audioPlayer.Progress);
                 }
             }
         }

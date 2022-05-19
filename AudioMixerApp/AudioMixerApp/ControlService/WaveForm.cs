@@ -89,7 +89,7 @@ namespace AudioMixerApp.ControlService
                     float highPercent = ((((float)high) - short.MinValue) / ushort.MaxValue);
                     e.Graphics.DrawLine(Pens.Orange, x, this.Height * lowPercent, x, this.Height * highPercent);
                 }
-                e.Graphics.DrawLine(Pens.Blue, xMiddle, 0, xMiddle, this.Height);
+                e.Graphics.DrawLine(Pens.White, xMiddle, 0, xMiddle, this.Height);
             }
 
             base.OnPaint(e);

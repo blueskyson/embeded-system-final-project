@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace AudioMixerApp
         public void LoadWaveStream(String path, TimeSpan duration)
         {
             durationLabel.Text = FormatTimeSpan(duration);
+            trackName.Text = Path.GetFileName(path);
             waveform.WaveStream = new WaveFileReader(path);
         }
 

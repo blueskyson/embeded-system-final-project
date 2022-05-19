@@ -68,6 +68,7 @@ namespace AudioMixerApp
                     lock (lockAudio)
                     {
                         if (audioPlayer != null) {
+                            audioPlayer.Stop();
                             audioPlayer.Close();
                             audioPlayer = null;
                         }

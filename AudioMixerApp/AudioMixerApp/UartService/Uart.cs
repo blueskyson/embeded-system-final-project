@@ -22,28 +22,24 @@ namespace AudioPlayerApp
             baud_rate = BaudRate;
         }
 
-        public void OpenSerial()
+        public bool OpenSerial()
         {
             serial_port = new SerialPort(port_name, baud_rate);
 
-            try
-            {
+            try {
                 serial_port.Open();
-                if (!serial_port.IsOpen)
-                {
-                    Console.WriteLine("Fail to open " + port_name);
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Success to open " + port_name);
-                }
-            }
-            catch (Exception e)
-            {
+                //if (!serial_port.IsOpen) {
+                //    Console.WriteLine("Fail to open " + port_name);
+                //    return false;
+                //} else {
+                //    Console.WriteLine("Success to open " + port_name);
+                //    return 
+                //}
+            } catch (Exception) {
                 serial_port.Dispose();
-                Console.WriteLine(e.Message);
             }
+
+            return serial_port.IsOpen;
         }
 
         public void CloseSerial()
@@ -55,8 +51,7 @@ namespace AudioPlayerApp
 
         public string ReadLines()
         {
-            try
-            {
+            try {
                 string s = serial_port.ReadExisting();
                 string buffer = "";
                 foreach (char c in s)
@@ -72,23 +67,17 @@ namespace AudioPlayerApp
                 serial_buffer = buffer;
                 if (ret.Length > 0 && ret[ret.Length - 1] == '\n')
                     return ret;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return "";
+            } catch (Exception e) {
+                // Console.WriteLine(e.Message);
             }
             return "";
         }
 
         public void Send(string s)
         {
-            try
-            {
+            try {
                 serial_port.Write(s);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
             }
         }

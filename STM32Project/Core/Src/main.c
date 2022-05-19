@@ -138,8 +138,8 @@ void button()
 void adc()
 {
 	for (;;) {
-		printf("Task1: %d\r\n", ADCArray[0]);
-		printf("Task2: %d\r\n", ADCArray[1]);
+		printf("Task1: %d\n", ADCArray[0]);
+		printf("Task2: %d\n", ADCArray[1]);
 		vTaskDelay(100);
 	}
 }

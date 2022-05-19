@@ -16,6 +16,7 @@ namespace AudioMixerApp
 {
     public partial class mainForm : Form
     {
+        Uart uart;
 
         public mainForm()
         {
@@ -24,6 +25,7 @@ namespace AudioMixerApp
             infoCard2.setId(2);
             deck1.infoCard = infoCard1;
             deck2.infoCard = infoCard2;
+            serialTimer.Stop();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -44,6 +46,32 @@ namespace AudioMixerApp
             //}
 
             //u.CloseSerial();
+        }
+
+        private void openSerialButton_Click(object sender, EventArgs e)
+        {
+            if (!Int32.TryParse(serialSpeed.Text, out int speed)) {
+                MessageBox.Show("Fail to parse speed " + serialSpeed.Text);
+                return;
+            }
+
+            uart = new Uart(serialLine.Text, speed);
+            if (!uart.OpenSerial()) {
+                MessageBox.Show("Fail to open " + serialLine.Text);
+                uart = null;
+                return;
+            }
+
+            serialTimer.Start();
+        }
+
+        private void serialTimer_Tick(object sender, EventArgs e)
+        {
+            string line = uart.ReadLines();
+            if (line != "")
+            {
+                Console.Write(line);
+            }
         }
     }
 }

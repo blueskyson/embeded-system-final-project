@@ -30,11 +30,12 @@ namespace AudioMixerApp
         private void InitializeComponent()
         {
             this.title = new System.Windows.Forms.Label();
-            this.waveform = new AudioMixerApp.ControlService.WaveForm();
             this.timeLabel = new System.Windows.Forms.Label();
             this.durationLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.trackName = new System.Windows.Forms.Label();
+            this.waveform = new AudioMixerApp.ControlService.WaveForm();
             this.SuspendLayout();
             // 
             // title
@@ -46,22 +47,11 @@ namespace AudioMixerApp
             this.title.TabIndex = 1;
             this.title.Text = "Track";
             // 
-            // waveform
-            // 
-            this.waveform.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.waveform.Location = new System.Drawing.Point(95, 3);
-            this.waveform.Name = "waveform";
-            this.waveform.SamplesPerPixel = 128;
-            this.waveform.Size = new System.Drawing.Size(714, 166);
-            this.waveform.StartPosition = ((long)(0));
-            this.waveform.TabIndex = 2;
-            this.waveform.WaveStream = null;
-            // 
             // timeLabel
             // 
             this.timeLabel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.timeLabel.ForeColor = System.Drawing.Color.Blue;
-            this.timeLabel.Location = new System.Drawing.Point(4, 50);
+            this.timeLabel.Location = new System.Drawing.Point(4, 53);
             this.timeLabel.Name = "timeLabel";
             this.timeLabel.Size = new System.Drawing.Size(66, 24);
             this.timeLabel.TabIndex = 3;
@@ -71,7 +61,7 @@ namespace AudioMixerApp
             // 
             this.durationLabel.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.durationLabel.ForeColor = System.Drawing.Color.Blue;
-            this.durationLabel.Location = new System.Drawing.Point(4, 98);
+            this.durationLabel.Location = new System.Drawing.Point(4, 101);
             this.durationLabel.Name = "durationLabel";
             this.durationLabel.Size = new System.Drawing.Size(66, 24);
             this.durationLabel.TabIndex = 4;
@@ -80,7 +70,7 @@ namespace AudioMixerApp
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(4, 26);
+            this.label1.Location = new System.Drawing.Point(4, 29);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(86, 24);
             this.label1.TabIndex = 5;
@@ -89,16 +79,37 @@ namespace AudioMixerApp
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(4, 74);
+            this.label2.Location = new System.Drawing.Point(4, 77);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 24);
             this.label2.TabIndex = 6;
             this.label2.Text = "Duration";
             // 
+            // trackName
+            // 
+            this.trackName.Font = new System.Drawing.Font("Calisto MT", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.trackName.Location = new System.Drawing.Point(92, 0);
+            this.trackName.Name = "trackName";
+            this.trackName.Size = new System.Drawing.Size(845, 23);
+            this.trackName.TabIndex = 7;
+            this.trackName.Text = "--";
+            // 
+            // waveform
+            // 
+            this.waveform.BackColor = System.Drawing.Color.Black;
+            this.waveform.Location = new System.Drawing.Point(96, 29);
+            this.waveform.Name = "waveform";
+            this.waveform.SamplesPerPixel = 128;
+            this.waveform.Size = new System.Drawing.Size(844, 172);
+            this.waveform.StartPosition = ((long)(0));
+            this.waveform.TabIndex = 2;
+            this.waveform.WaveStream = null;
+            // 
             // InfoCard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.trackName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.durationLabel);
@@ -106,7 +117,7 @@ namespace AudioMixerApp
             this.Controls.Add(this.waveform);
             this.Controls.Add(this.title);
             this.Name = "InfoCard";
-            this.Size = new System.Drawing.Size(812, 172);
+            this.Size = new System.Drawing.Size(945, 205);
             this.ResumeLayout(false);
 
         }
@@ -118,5 +129,6 @@ namespace AudioMixerApp
         private System.Windows.Forms.Label durationLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label trackName;
     }
 }

@@ -145,6 +145,44 @@ void adc()
 	}
 }
 
+void button1()
+{
+	bool press = false;
+	bool state = false;
+	for (;;) {
+		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET ) {
+			if (!press) {
+				state = (state) ? false : true;
+				printf("Task1 state: %d\r\n", state);
+				press = true;
+			}
+		}
+		else {
+			press = false;
+		}
+		vTaskDelay(100);
+	}
+}
+
+void button2()
+{
+	bool press = false;
+	bool state = false;
+	for (;;) {
+		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_7) == GPIO_PIN_SET ) {
+			if (!press) {
+				state = (state) ? false : true;
+				printf("Task2 state: %d\r\n", state);
+				press = true;
+			}
+		}
+		else {
+			press = false;
+		}
+		vTaskDelay(100);
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -214,6 +252,8 @@ int main(void)
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
 //	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);
   	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
+  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
+  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
 //	xSemaphoreGive(xSemaphore1);
 	vTaskStartScheduler();
   /* USER CODE END 2 */

@@ -138,8 +138,9 @@ void button()
 void adc()
 {
 	for (;;) {
-		printf("Task1: %d\n", ADCArray[0]);
-		printf("Task2: %d\n", ADCArray[1]);
+		// Data Positions
+		// VariableResister0, VariableResister1
+		printf("%d %d\n", ADCArray[0], ADCArray[1]);
 		vTaskDelay(100);
 	}
 }

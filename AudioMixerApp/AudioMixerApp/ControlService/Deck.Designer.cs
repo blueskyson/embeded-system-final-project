@@ -78,14 +78,14 @@ namespace AudioMixerApp
             this.volumnTrackbar.BackColor = System.Drawing.SystemColors.Control;
             this.volumnTrackbar.Cursor = System.Windows.Forms.Cursors.Default;
             this.volumnTrackbar.Location = new System.Drawing.Point(10, 3);
-            this.volumnTrackbar.Maximum = 100;
+            this.volumnTrackbar.Maximum = 500;
             this.volumnTrackbar.Name = "volumnTrackbar";
             this.volumnTrackbar.Orientation = System.Windows.Forms.Orientation.Vertical;
             this.volumnTrackbar.Size = new System.Drawing.Size(56, 275);
             this.volumnTrackbar.TabIndex = 1;
             this.volumnTrackbar.TickFrequency = 5;
             this.volumnTrackbar.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.volumnTrackbar.Scroll += new System.EventHandler(this.volumnTrackbar_Scroll);
+            this.volumnTrackbar.ValueChanged += new System.EventHandler(this.volumnTrackbar_ValueChanged);
             // 
             // Deck
             // 

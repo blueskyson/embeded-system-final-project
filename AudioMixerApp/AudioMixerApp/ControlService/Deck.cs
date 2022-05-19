@@ -33,6 +33,9 @@ namespace AudioMixerApp
         private AudioPlayer audioPlayer;
         private object lockAudio = new object();
 
+        private static int TrackbarMax = 150;
+        private float volumeScale;
+
         public Deck()
         {
             InitializeComponent();
@@ -43,16 +46,33 @@ namespace AudioMixerApp
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(5);
             timer.Tick += timer_Tick;
+
+            volumnTrackbar.Maximum = TrackbarMax;
+            volumnTrackbar.TickFrequency = TrackbarMax / 20;
+            volumeScale = 4096 / volumnTrackbar.Maximum;
         }
 
-        private void volumnTrackbar_Scroll(object sender, EventArgs e)
+        private void volumnTrackbar_ValueChanged(object sender, EventArgs e)
         {
             lock (lockAudio)
             {
-                if (audioPlayer != null) {
-                    var volume = (float)volumnTrackbar.Value / volumnTrackbar.Maximum;
+                if (audioPlayer != null)
+                {
+                    float volume = (float)volumnTrackbar.Value / volumnTrackbar.Maximum;
                     audioPlayer.Volume = volume;
                 }
+            }
+        }
+
+        public void changeVolume(int val) {
+            float volume = (float)val / volumeScale;
+            try {
+                int vol =  
+                volumnTrackbar.Value = (int)volume > volumnTrackbar.Maximum ?
+                                       volumnTrackbar.Maximum : 
+                                       (int)volume;
+            } finally {
+
             }
         }
 
@@ -164,5 +184,7 @@ namespace AudioMixerApp
         {
 
         }
+
+
     }
 }

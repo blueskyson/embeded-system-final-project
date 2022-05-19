@@ -67,7 +67,7 @@ namespace AudioPlayerApp
                 serial_buffer = buffer;
                 if (ret.Length > 0 && ret[ret.Length - 1] == '\n')
                     return ret;
-            } catch (Exception e) {
+            } catch (Exception) {
                 // Console.WriteLine(e.Message);
             }
             return "";

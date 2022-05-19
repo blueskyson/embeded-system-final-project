@@ -30,22 +30,7 @@ namespace AudioMixerApp
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Test uart
-            // TODO: Use a seperated thread
-            //Uart u = new Uart("COM4", 9600);
-            //u.OpenSerial();
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    string line = u.ReadLines();
-            //    if (line != "")
-            //    {
-            //        Console.Write(line);
-            //    }
-            //    Thread.Sleep(1000);
-            //}
-
-            //u.CloseSerial();
         }
 
         private void openSerialButton_Click(object sender, EventArgs e)
@@ -68,9 +53,27 @@ namespace AudioMixerApp
         private void serialTimer_Tick(object sender, EventArgs e)
         {
             string line = uart.ReadLines();
-            if (line != "")
-            {
-                Console.Write(line);
+            if (line != "") {
+                char[] rowSeparator = { '\n' };
+                string[] rows = line.Split(rowSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+                // only use row[0], drop other rows
+                char[] separator = { ' ' };
+                string[] dataString = rows[0].Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                int[] data = Array.ConvertAll(dataString, delegate (string s) {
+                    if (!Int32.TryParse(s, out int val)) {
+                        val = -1;
+                    }
+                    return val;
+                });
+
+                // for debug
+                //foreach (int val in data) {
+                //    Console.Write(val.ToString() + '\n');
+                //}
+
+                deck1.changeVolume(data[1]);
+                deck2.changeVolume(data[0]);
             }
         }
     }

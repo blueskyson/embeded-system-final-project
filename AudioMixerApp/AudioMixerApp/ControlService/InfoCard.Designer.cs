@@ -103,7 +103,6 @@ namespace AudioMixerApp
             this.waveform.Size = new System.Drawing.Size(844, 172);
             this.waveform.StartPosition = ((long)(0));
             this.waveform.TabIndex = 2;
-            this.waveform.WaveStream = null;
             // 
             // InfoCard
             // 

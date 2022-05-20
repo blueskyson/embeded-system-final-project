@@ -20,23 +20,29 @@ namespace AudioMixerApp.ControlService
         private long startPosition;
         private long currentPosition;
 
+        // FFT
+        private WaveFormFFT fft;
+
         public WaveForm()
         {
             InitializeComponent();
             this.DoubleBuffered = true;
         }
 
-        public WaveStream WaveStream
+        public void readWaveFile(string path)
         {
-            get { return waveStream; }
-            set {
-                waveStream = value;
-                if (waveStream != null) {
-                    bytesPerSample = (waveStream.WaveFormat.BitsPerSample / 8) * waveStream.WaveFormat.Channels;
-                    currentPosition = 0;
-                }
-                this.Invalidate();
+            waveStream = new WaveFileReader(path);
+            if (waveStream != null)
+            {
+                bytesPerSample = (waveStream.WaveFormat.BitsPerSample / 8) * waveStream.WaveFormat.Channels;
+                currentPosition = 0;
+
+                // Perform FFT
+                fft = new WaveFormFFT(waveStream, samplesPerPixel);
+                _ = fft.InitAsync();
             }
+
+            this.Invalidate();
         }
 
         public int SamplesPerPixel
@@ -80,14 +86,17 @@ namespace AudioMixerApp.ControlService
                     long bytesRead = waveStream.Read(waveData, 0, samplesPerPixel * bytesPerSample);
                     if (bytesRead == 0)
                         break;
+
                     for (int n = 0; n < bytesRead; n += 2) {
                         short sample = BitConverter.ToInt16(waveData, n);
                         if (sample < low) low = sample;
                         if (sample > high) high = sample;
                     }
-                    float lowPercent = ((((float)low) - short.MinValue) / ushort.MaxValue);
-                    float highPercent = ((((float)high) - short.MinValue) / ushort.MaxValue);
-                    e.Graphics.DrawLine(Pens.Orange, x, this.Height * lowPercent, x, this.Height * highPercent);
+                    float lowPercent = (((float)low) - short.MinValue) / ushort.MaxValue;
+                    float highPercent = (((float)high) - short.MinValue) / ushort.MaxValue;
+                    
+                    Pen pen = new Pen(fft.getColor((int)(startPosition + x)));
+                    e.Graphics.DrawLine(pen, x, this.Height * lowPercent, x, this.Height * highPercent);
                 }
                 e.Graphics.DrawLine(Pens.White, xMiddle, 0, xMiddle, this.Height);
             }

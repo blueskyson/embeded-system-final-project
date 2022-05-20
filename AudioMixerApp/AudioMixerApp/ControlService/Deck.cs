@@ -44,7 +44,7 @@ namespace AudioMixerApp
             MediaManager.Startup();
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(5);
+            timer.Interval = TimeSpan.FromMilliseconds(10);
             timer.Tick += timer_Tick;
 
             volumnTrackbar.Maximum = TrackbarMax;

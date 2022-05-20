@@ -32,7 +32,7 @@ namespace AudioMixerApp
         {
             durationLabel.Text = FormatTimeSpan(duration);
             trackName.Text = Path.GetFileName(path);
-            waveform.WaveStream = new WaveFileReader(path);
+            waveform.readWaveFile(path);
         }
 
         public void UpdateWaveForm(TimeSpan time, double progress)

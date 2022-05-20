@@ -36,6 +36,7 @@ namespace AudioMixerApp
             this.serialSpeed = new System.Windows.Forms.TextBox();
             this.openSerialButton = new System.Windows.Forms.Button();
             this.serialTimer = new System.Windows.Forms.Timer(this.components);
+            this.closeSerialButton = new System.Windows.Forms.Button();
             this.infoCard2 = new AudioMixerApp.InfoCard();
             this.infoCard1 = new AudioMixerApp.InfoCard();
             this.deck2 = new AudioMixerApp.Deck();
@@ -94,6 +95,16 @@ namespace AudioMixerApp
             this.serialTimer.Interval = 10;
             this.serialTimer.Tick += new System.EventHandler(this.serialTimer_Tick);
             // 
+            // closeSerialButton
+            // 
+            this.closeSerialButton.Location = new System.Drawing.Point(449, 8);
+            this.closeSerialButton.Name = "closeSerialButton";
+            this.closeSerialButton.Size = new System.Drawing.Size(93, 26);
+            this.closeSerialButton.TabIndex = 9;
+            this.closeSerialButton.Text = "close";
+            this.closeSerialButton.UseVisualStyleBackColor = true;
+            this.closeSerialButton.Click += new System.EventHandler(this.closeSerialButton_Click);
+            // 
             // infoCard2
             // 
             this.infoCard2.AutoSize = true;
@@ -136,7 +147,8 @@ namespace AudioMixerApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1158, 518);
+            this.ClientSize = new System.Drawing.Size(1158, 498);
+            this.Controls.Add(this.closeSerialButton);
             this.Controls.Add(this.openSerialButton);
             this.Controls.Add(this.serialSpeed);
             this.Controls.Add(this.label2);
@@ -169,6 +181,7 @@ namespace AudioMixerApp
         private System.Windows.Forms.TextBox serialSpeed;
         private System.Windows.Forms.Button openSerialButton;
         private System.Windows.Forms.Timer serialTimer;
+        private System.Windows.Forms.Button closeSerialButton;
     }
 }
 

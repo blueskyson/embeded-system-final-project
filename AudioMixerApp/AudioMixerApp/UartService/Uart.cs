@@ -28,13 +28,6 @@ namespace AudioPlayerApp
 
             try {
                 serial_port.Open();
-                //if (!serial_port.IsOpen) {
-                //    Console.WriteLine("Fail to open " + port_name);
-                //    return false;
-                //} else {
-                //    Console.WriteLine("Success to open " + port_name);
-                //    return 
-                //}
             } catch (Exception) {
                 serial_port.Dispose();
             }
@@ -46,7 +39,6 @@ namespace AudioPlayerApp
         {
             serial_buffer = "";
             serial_port.Dispose();
-            Console.WriteLine("Close port: " + port_name);
         }
 
         public string ReadLines()

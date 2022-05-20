@@ -76,5 +76,15 @@ namespace AudioMixerApp
                 deck2.changeVolume(data[0]);
             }
         }
+
+        private void closeSerialButton_Click(object sender, EventArgs e)
+        {
+            if (uart != null) {
+                uart.CloseSerial();
+                uart = null;
+            }
+
+            serialTimer.Stop();
+        }
     }
 }

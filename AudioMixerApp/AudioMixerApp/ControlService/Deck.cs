@@ -132,10 +132,12 @@ namespace AudioMixerApp
             }
         }
 
-        private void playIcon_Click(object sender, EventArgs e)
+        public void play()
         {
-            lock (lockAudio) {
-                if (audioPlayer != null && audioPlayer.State != AudioPlayerState.Playing) {
+            lock (lockAudio)
+            {
+                if (audioPlayer != null && audioPlayer.State != AudioPlayerState.Playing)
+                {
                     var volume = (float)volumnTrackbar.Value / volumnTrackbar.Maximum;
                     audioPlayer.Volume = volume;
                     audioPlayer.Play();
@@ -144,20 +146,30 @@ namespace AudioMixerApp
                     pauseIcon.Image = Properties.Resources.pause;
                 }
             }
-
         }
 
-        private void pauseIcon_Click(object sender, EventArgs e)
+        public void pause()
         {
-            lock (lockAudio) {
-                if (audioPlayer != null) {
+            lock (lockAudio)
+            {
+                if (audioPlayer != null)
+                {
                     audioPlayer.Pause();
                     timer.Stop();
                     playIcon.Image = Properties.Resources.play;
                     pauseIcon.Image = Properties.Resources.pause2;
                 }
             }
+        }
 
+        private void playIcon_Click(object sender, EventArgs e)
+        {
+            play();
+        }
+
+        private void pauseIcon_Click(object sender, EventArgs e)
+        {
+            pause();
         }
 
         private void Deck_ControlRemoved(object sender, ControlEventArgs e)

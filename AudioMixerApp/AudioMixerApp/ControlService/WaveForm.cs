@@ -96,7 +96,7 @@ namespace AudioMixerApp.ControlService
                     float highPercent = (((float)high) - short.MinValue) / ushort.MaxValue;
                     
                     Pen pen = new Pen(fft.getColor((int)(startPosition + x)));
-                    e.Graphics.DrawLine(pen, x, this.Height * lowPercent, x, this.Height * highPercent);
+                    e.Graphics.DrawLine(Pens.Orange, x, this.Height * lowPercent, x, this.Height * highPercent);
                 }
                 e.Graphics.DrawLine(Pens.White, xMiddle, 0, xMiddle, this.Height);
             }

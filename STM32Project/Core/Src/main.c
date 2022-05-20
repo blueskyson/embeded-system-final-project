@@ -100,6 +100,8 @@ void Task1(void *pvParameters);
 void Task2(void *pvParameters);
 void Task3(void *pvParameters);
 
+// Task Id
+int Adc = 0, Btn1 = 1, Btn2 = 2;
 
 void SD_RdWrTest(void)
 {
@@ -140,7 +142,7 @@ void adc()
 	for (;;) {
 		// Data Positions
 		// VariableResister0, VariableResister1
-		printf("%d %d\n", ADCArray[0], ADCArray[1]);
+		printf("%d %d %d\n", Adc, ADCArray[0], ADCArray[1]);
 		vTaskDelay(100);
 	}
 }
@@ -153,7 +155,7 @@ void button1()
 		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET ) {
 			if (!press) {
 				state = (state) ? false : true;
-				printf("Task1 state: %d\r\n", state);
+				printf("%d %d\n", Btn1, state);
 				press = true;
 			}
 		}
@@ -172,7 +174,7 @@ void button2()
 		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_7) == GPIO_PIN_SET ) {
 			if (!press) {
 				state = (state) ? false : true;
-				printf("Task2 state: %d\r\n", state);
+				printf("%d %d\n", Btn2, state);
 				press = true;
 			}
 		}

@@ -67,13 +67,28 @@ namespace AudioMixerApp
                     return val;
                 });
 
-                // for debug
-                //foreach (int val in data) {
-                //    Console.Write(val.ToString() + '\n');
-                //}
+                Console.Write(line);
 
-                deck1.changeVolume(data[1]);
-                deck2.changeVolume(data[0]);
+                int Adc = 0, Btn1 = 2, Btn2 = 1;
+
+                if (data[0] == Adc) {
+                    deck1.changeVolume(data[2]);
+                    deck2.changeVolume(data[1]);
+                } else if (data[0] == Btn1) {
+                    if (data[1] == 0) {
+                        deck1.pause();
+                    } else {
+                        deck1.play();
+                    }
+                } else if (data[0] == Btn2) {
+                    if (data[1] == 0) {
+                        deck2.pause();
+                    } else {
+                        deck2.play();
+                    }
+                }
+
+
             }
         }
 

@@ -102,7 +102,8 @@ void Task3(void *pvParameters);
 
 // Task Id
 int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
-int delayTime = 100;
+
+int delayTime = 50;
 
 void SD_RdWrTest(void)
 {
@@ -140,10 +141,26 @@ void button()
 
 void adc()
 {
+	bool press = false;
+	int current_track = 0; // 0 to 2
 	for (;;) {
 		// Data Positions
-		// VariableResister0, VariableResister1
-		printf("%d %d %d %d\n", Adc, ADCArray[0], ADCArray[1], ADCArray[2]);
+		if (ADCArray[2] > 4000) {
+			if (!press) {
+				current_track = (current_track == 2) ? 0 : current_track + 1;
+				press = true;
+			}
+		} else if (ADCArray[2] < 100) {
+			if (!press) {
+				current_track = (current_track == 0) ? 2 : current_track - 1;
+				press = true;
+			}
+		} else {
+			press = false;
+		}
+
+		// VariableResister0, VariableResister1, current_track
+		printf("%d %d %d %d\n", Adc, ADCArray[0], ADCArray[1], current_track);
 		vTaskDelay(delayTime);
 	}
 }

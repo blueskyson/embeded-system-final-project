@@ -45,6 +45,12 @@ namespace AudioMixerApp
             this.deck4 = new AudioMixerApp.Deck();
             this.infoCard3 = new AudioMixerApp.InfoCard();
             this.infoCard4 = new AudioMixerApp.InfoCard();
+            this.select1 = new System.Windows.Forms.PictureBox();
+            this.select2 = new System.Windows.Forms.PictureBox();
+            this.select3 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.select1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.select2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.select3)).BeginInit();
             this.SuspendLayout();
             // 
             // serialLine
@@ -130,7 +136,7 @@ namespace AudioMixerApp
             // deck2
             // 
             this.deck2.infoCard = null;
-            this.deck2.Location = new System.Drawing.Point(1049, 51);
+            this.deck2.Location = new System.Drawing.Point(1049, 77);
             this.deck2.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck2.Name = "deck2";
             this.deck2.Size = new System.Drawing.Size(75, 480);
@@ -139,7 +145,7 @@ namespace AudioMixerApp
             // deck1
             // 
             this.deck1.infoCard = null;
-            this.deck1.Location = new System.Drawing.Point(968, 51);
+            this.deck1.Location = new System.Drawing.Point(968, 77);
             this.deck1.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck1.Name = "deck1";
             this.deck1.Size = new System.Drawing.Size(75, 480);
@@ -148,7 +154,7 @@ namespace AudioMixerApp
             // deck3
             // 
             this.deck3.infoCard = null;
-            this.deck3.Location = new System.Drawing.Point(1130, 51);
+            this.deck3.Location = new System.Drawing.Point(1130, 77);
             this.deck3.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck3.Name = "deck3";
             this.deck3.Size = new System.Drawing.Size(75, 480);
@@ -157,7 +163,7 @@ namespace AudioMixerApp
             // deck4
             // 
             this.deck4.infoCard = null;
-            this.deck4.Location = new System.Drawing.Point(1211, 51);
+            this.deck4.Location = new System.Drawing.Point(1211, 77);
             this.deck4.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck4.Name = "deck4";
             this.deck4.Size = new System.Drawing.Size(75, 480);
@@ -181,11 +187,47 @@ namespace AudioMixerApp
             this.infoCard4.Size = new System.Drawing.Size(950, 140);
             this.infoCard4.TabIndex = 13;
             // 
+            // select1
+            // 
+            this.select1.Image = global::AudioMixerApp.Properties.Resources.select;
+            this.select1.Location = new System.Drawing.Point(968, 21);
+            this.select1.Name = "select1";
+            this.select1.Size = new System.Drawing.Size(156, 50);
+            this.select1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.select1.TabIndex = 14;
+            this.select1.TabStop = false;
+            this.select1.Visible = false;
+            // 
+            // select2
+            // 
+            this.select2.Image = global::AudioMixerApp.Properties.Resources.select;
+            this.select2.Location = new System.Drawing.Point(1049, 21);
+            this.select2.Name = "select2";
+            this.select2.Size = new System.Drawing.Size(156, 50);
+            this.select2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.select2.TabIndex = 15;
+            this.select2.TabStop = false;
+            this.select2.Visible = false;
+            // 
+            // select3
+            // 
+            this.select3.Image = global::AudioMixerApp.Properties.Resources.select;
+            this.select3.Location = new System.Drawing.Point(1130, 21);
+            this.select3.Name = "select3";
+            this.select3.Size = new System.Drawing.Size(156, 50);
+            this.select3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.select3.TabIndex = 16;
+            this.select3.TabStop = false;
+            this.select3.Visible = false;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1288, 635);
+            this.ClientSize = new System.Drawing.Size(1311, 635);
+            this.Controls.Add(this.select3);
+            this.Controls.Add(this.select2);
+            this.Controls.Add(this.select1);
             this.Controls.Add(this.infoCard4);
             this.Controls.Add(this.infoCard3);
             this.Controls.Add(this.deck4);
@@ -206,6 +248,9 @@ namespace AudioMixerApp
             this.Name = "mainForm";
             this.Text = "AudioMixer";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.select1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.select2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.select3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,6 +273,9 @@ namespace AudioMixerApp
         private Deck deck4;
         private InfoCard infoCard3;
         private InfoCard infoCard4;
+        private System.Windows.Forms.PictureBox select1;
+        private System.Windows.Forms.PictureBox select2;
+        private System.Windows.Forms.PictureBox select3;
     }
 }
 

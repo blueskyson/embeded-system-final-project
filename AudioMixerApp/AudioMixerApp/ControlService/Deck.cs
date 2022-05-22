@@ -144,6 +144,7 @@ namespace AudioMixerApp
                     timer.Start();
                     playIcon.Image = Properties.Resources.play2;
                     pauseIcon.Image = Properties.Resources.pause;
+                    loadButton.Enabled = false;
                 }
             }
         }
@@ -158,6 +159,7 @@ namespace AudioMixerApp
                     timer.Stop();
                     playIcon.Image = Properties.Resources.play;
                     pauseIcon.Image = Properties.Resources.pause2;
+                    loadButton.Enabled = true;
                 }
             }
         }

@@ -17,7 +17,11 @@ namespace AudioMixerApp
     public partial class mainForm : Form
     {
         Uart uart;
-        InfoCard[] infoCards;
+        private static int trackNum = 4;
+        Deck[] decks;
+        PictureBox[] selectPictures;
+        int currentTrack = 0;
+
         public mainForm()
         {
             InitializeComponent();
@@ -26,18 +30,21 @@ namespace AudioMixerApp
             infoCard3.setId(3);
             infoCard4.setId(4);
 
-            infoCards = new InfoCard[4];
-            infoCards[0] = infoCard1;
-            infoCards[1] = infoCard2;
-            infoCards[2] = infoCard3;
-            infoCards[3] = infoCard4;
+            decks = new Deck[trackNum];
+            decks[0] = deck1;
+            decks[1] = deck2;
+            decks[2] = deck3;
+            decks[3] = deck4;
+
             deck1.infoCard = infoCard1;
             deck2.infoCard = infoCard2;
             deck3.infoCard = infoCard3;
             deck4.infoCard = infoCard4;
 
-
-
+            selectPictures = new PictureBox[trackNum - 1];
+            selectPictures[0] = select1;
+            selectPictures[1] = select2;
+            selectPictures[2] = select3;
 
             serialTimer.Stop();
         }
@@ -94,10 +101,12 @@ namespace AudioMixerApp
 
                 if (data[0] == Adc)
                 {
-                    if (data.Length < 3)
+                    if (data.Length < 4)
                         return;
-                    deck1.changeVolume(data[2]);
-                    deck2.changeVolume(data[1]);
+
+                    setCurrentTrack(data[3]);
+                    decks[currentTrack].changeVolume(data[2]);
+                    decks[currentTrack + 1].changeVolume(data[1]);
                 }
                 else if (data[0] == Btn1)
                 {
@@ -105,11 +114,11 @@ namespace AudioMixerApp
                         return;
                     if (data[1] == 0)
                     {
-                        deck1.pause();
+                        decks[currentTrack].pause();
                     }
                     else
                     {
-                        deck1.play();
+                        decks[currentTrack].play();
                     }
                 }
                 else if (data[0] == Btn2)
@@ -118,11 +127,11 @@ namespace AudioMixerApp
                         return;
                     if (data[1] == 0)
                     {
-                        deck2.pause();
+                        decks[currentTrack + 1].pause();
                     }
                     else
                     {
-                        deck2.play();
+                        decks[currentTrack + 1].play();
                     }
                 }
 
@@ -138,6 +147,15 @@ namespace AudioMixerApp
             }
 
             serialTimer.Stop();
+        }
+
+        private void setCurrentTrack(int track)
+        {
+            if (currentTrack == track)
+                return;
+            selectPictures[currentTrack].Visible = false;
+            selectPictures[track].Visible = true;
+            currentTrack = track;
         }
     }
 }

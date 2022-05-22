@@ -101,7 +101,8 @@ void Task2(void *pvParameters);
 void Task3(void *pvParameters);
 
 // Task Id
-int Adc = 0, Btn1 = 1, Btn2 = 2;
+int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
+int delayTime = 100;
 
 void SD_RdWrTest(void)
 {
@@ -133,7 +134,7 @@ void button()
 		else {
 			press = false;
 		}
-		vTaskDelay(100);
+		vTaskDelay(delayTime);
 	}
 }
 
@@ -142,8 +143,8 @@ void adc()
 	for (;;) {
 		// Data Positions
 		// VariableResister0, VariableResister1
-		printf("%d %d %d\n", Adc, ADCArray[0], ADCArray[1]);
-		vTaskDelay(100);
+		printf("%d %d %d %d\n", Adc, ADCArray[0], ADCArray[1], ADCArray[2]);
+		vTaskDelay(delayTime);
 	}
 }
 
@@ -162,7 +163,7 @@ void button1()
 		else {
 			press = false;
 		}
-		vTaskDelay(100);
+		vTaskDelay(delayTime);
 	}
 }
 
@@ -181,7 +182,7 @@ void button2()
 		else {
 			press = false;
 		}
-		vTaskDelay(100);
+		vTaskDelay(delayTime);
 	}
 }
 
@@ -190,8 +191,8 @@ void joystick()
 	int press;
 	for (;;) {
 		press = (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_SET ) ? 1 : 0;
-		printf("x: %d\r\n", ADCArray[2]);
-		vTaskDelay(100);
+		printf("%d %d\r\n", Joystick, ADCArray[2]);
+		vTaskDelay(delayTime);
 	}
 }
 
@@ -232,7 +233,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-  printf("Start\r\n");
+
   if(HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADCArray, 4) != HAL_OK)
   {
          printf("ADC initialization error!\r\n");
@@ -263,10 +264,10 @@ int main(void)
 
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
 //	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);
-//  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
-//  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
-//  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
-  	xTaskCreate(joystick, "joystick", 500, NULL, 1, NULL);
+  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
+  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
+  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
+  	//xTaskCreate(joystick, "joystick", 500, NULL, 1, NULL);
 //	xSemaphoreGive(xSemaphore1);
 	vTaskStartScheduler();
   /* USER CODE END 2 */
@@ -530,7 +531,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 9600;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;

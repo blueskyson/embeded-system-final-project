@@ -80,7 +80,7 @@ namespace AudioMixerApp.ControlService
                 
                 byte[] waveData = new byte[samplesPerPixel * bytesPerSample];
 
-                for (float x = e.ClipRectangle.X + startOffset; x < e.ClipRectangle.Right; x += 1) {
+                for (float x = e.ClipRectangle.X + startOffset; x < e.ClipRectangle.Right; x += 4) {
                     short low = 0;
                     short high = 0;
                     long bytesRead = waveStream.Read(waveData, 0, samplesPerPixel * bytesPerSample);
@@ -94,9 +94,10 @@ namespace AudioMixerApp.ControlService
                     }
                     float lowPercent = (((float)low) - short.MinValue) / ushort.MaxValue;
                     float highPercent = (((float)high) - short.MinValue) / ushort.MaxValue;
-                    
-                    Pen pen = new Pen(fft.getColor((int)(startPosition + x)));
-                    e.Graphics.DrawLine(Pens.Orange, x, this.Height * lowPercent, x, this.Height * highPercent);
+
+                    //Pen pen = new Pen(fft.getColor((int)(startPosition + x)));
+                    Pen pen = new Pen(Color.Orange, 2.0f);
+                    e.Graphics.DrawLine(pen, x, this.Height * lowPercent, x, this.Height * highPercent);
                 }
                 e.Graphics.DrawLine(Pens.White, xMiddle, 0, xMiddle, this.Height);
             }

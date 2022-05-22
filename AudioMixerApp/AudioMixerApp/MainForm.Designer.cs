@@ -41,6 +41,10 @@ namespace AudioMixerApp
             this.infoCard1 = new AudioMixerApp.InfoCard();
             this.deck2 = new AudioMixerApp.Deck();
             this.deck1 = new AudioMixerApp.Deck();
+            this.deck3 = new AudioMixerApp.Deck();
+            this.deck4 = new AudioMixerApp.Deck();
+            this.infoCard3 = new AudioMixerApp.InfoCard();
+            this.infoCard4 = new AudioMixerApp.InfoCard();
             this.SuspendLayout();
             // 
             // serialLine
@@ -108,10 +112,10 @@ namespace AudioMixerApp
             // infoCard2
             // 
             this.infoCard2.AutoSize = true;
-            this.infoCard2.Location = new System.Drawing.Point(12, 261);
+            this.infoCard2.Location = new System.Drawing.Point(12, 200);
             this.infoCard2.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard2.Name = "infoCard2";
-            this.infoCard2.Size = new System.Drawing.Size(972, 204);
+            this.infoCard2.Size = new System.Drawing.Size(950, 140);
             this.infoCard2.TabIndex = 3;
             // 
             // infoCard1
@@ -120,14 +124,13 @@ namespace AudioMixerApp
             this.infoCard1.Location = new System.Drawing.Point(12, 51);
             this.infoCard1.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard1.Name = "infoCard1";
-            this.infoCard1.Size = new System.Drawing.Size(972, 204);
+            this.infoCard1.Size = new System.Drawing.Size(950, 143);
             this.infoCard1.TabIndex = 2;
             // 
             // deck2
             // 
-            this.deck2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.deck2.infoCard = null;
-            this.deck2.Location = new System.Drawing.Point(1071, 12);
+            this.deck2.Location = new System.Drawing.Point(1049, 51);
             this.deck2.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck2.Name = "deck2";
             this.deck2.Size = new System.Drawing.Size(75, 480);
@@ -135,19 +138,58 @@ namespace AudioMixerApp
             // 
             // deck1
             // 
-            this.deck1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.deck1.infoCard = null;
-            this.deck1.Location = new System.Drawing.Point(990, 12);
+            this.deck1.Location = new System.Drawing.Point(968, 51);
             this.deck1.MinimumSize = new System.Drawing.Size(0, 480);
             this.deck1.Name = "deck1";
             this.deck1.Size = new System.Drawing.Size(75, 480);
             this.deck1.TabIndex = 0;
             // 
+            // deck3
+            // 
+            this.deck3.infoCard = null;
+            this.deck3.Location = new System.Drawing.Point(1130, 51);
+            this.deck3.MinimumSize = new System.Drawing.Size(0, 480);
+            this.deck3.Name = "deck3";
+            this.deck3.Size = new System.Drawing.Size(75, 480);
+            this.deck3.TabIndex = 10;
+            // 
+            // deck4
+            // 
+            this.deck4.infoCard = null;
+            this.deck4.Location = new System.Drawing.Point(1211, 51);
+            this.deck4.MinimumSize = new System.Drawing.Size(0, 480);
+            this.deck4.Name = "deck4";
+            this.deck4.Size = new System.Drawing.Size(75, 480);
+            this.deck4.TabIndex = 11;
+            // 
+            // infoCard3
+            // 
+            this.infoCard3.AutoSize = true;
+            this.infoCard3.Location = new System.Drawing.Point(12, 346);
+            this.infoCard3.MinimumSize = new System.Drawing.Size(500, 0);
+            this.infoCard3.Name = "infoCard3";
+            this.infoCard3.Size = new System.Drawing.Size(950, 140);
+            this.infoCard3.TabIndex = 12;
+            // 
+            // infoCard4
+            // 
+            this.infoCard4.AutoSize = true;
+            this.infoCard4.Location = new System.Drawing.Point(12, 492);
+            this.infoCard4.MinimumSize = new System.Drawing.Size(500, 0);
+            this.infoCard4.Name = "infoCard4";
+            this.infoCard4.Size = new System.Drawing.Size(950, 140);
+            this.infoCard4.TabIndex = 13;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1158, 498);
+            this.ClientSize = new System.Drawing.Size(1288, 635);
+            this.Controls.Add(this.infoCard4);
+            this.Controls.Add(this.infoCard3);
+            this.Controls.Add(this.deck4);
+            this.Controls.Add(this.deck3);
             this.Controls.Add(this.closeSerialButton);
             this.Controls.Add(this.openSerialButton);
             this.Controls.Add(this.serialSpeed);
@@ -182,6 +224,10 @@ namespace AudioMixerApp
         private System.Windows.Forms.Button openSerialButton;
         private System.Windows.Forms.Timer serialTimer;
         private System.Windows.Forms.Button closeSerialButton;
+        private Deck deck3;
+        private Deck deck4;
+        private InfoCard infoCard3;
+        private InfoCard infoCard4;
     }
 }
 

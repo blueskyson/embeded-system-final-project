@@ -36,6 +36,7 @@ namespace AudioMixerApp
             this.label2 = new System.Windows.Forms.Label();
             this.trackName = new System.Windows.Forms.Label();
             this.waveform = new AudioMixerApp.ControlService.WaveForm();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // title
@@ -100,14 +101,22 @@ namespace AudioMixerApp
             this.waveform.Location = new System.Drawing.Point(96, 29);
             this.waveform.Name = "waveform";
             this.waveform.SamplesPerPixel = 128;
-            this.waveform.Size = new System.Drawing.Size(844, 172);
+            this.waveform.Size = new System.Drawing.Size(844, 72);
             this.waveform.StartPosition = ((long)(0));
             this.waveform.TabIndex = 2;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(96, 107);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(844, 23);
+            this.progressBar1.TabIndex = 8;
             // 
             // InfoCard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.trackName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -116,7 +125,7 @@ namespace AudioMixerApp
             this.Controls.Add(this.waveform);
             this.Controls.Add(this.title);
             this.Name = "InfoCard";
-            this.Size = new System.Drawing.Size(945, 205);
+            this.Size = new System.Drawing.Size(945, 137);
             this.ResumeLayout(false);
 
         }
@@ -129,5 +138,6 @@ namespace AudioMixerApp
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label trackName;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

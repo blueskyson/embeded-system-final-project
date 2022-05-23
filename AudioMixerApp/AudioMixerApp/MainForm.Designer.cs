@@ -247,7 +247,6 @@ namespace AudioMixerApp
             this.ImeMode = System.Windows.Forms.ImeMode.Hiragana;
             this.Name = "mainForm";
             this.Text = "AudioMixer";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.select1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.select2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.select3)).EndInit();

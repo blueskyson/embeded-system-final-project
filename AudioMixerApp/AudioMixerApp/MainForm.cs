@@ -25,10 +25,10 @@ namespace AudioMixerApp
         public mainForm()
         {
             InitializeComponent();
-            infoCard1.setId(1);
-            infoCard2.setId(2);
-            infoCard3.setId(3);
-            infoCard4.setId(4);
+            infoCard1.setId(1, deck1);
+            infoCard2.setId(2, deck2);
+            infoCard3.setId(3, deck3);
+            infoCard4.setId(4, deck4);
 
             decks = new Deck[trackNum];
             decks[0] = deck1;
@@ -47,11 +47,6 @@ namespace AudioMixerApp
             selectPictures[2] = select3;
 
             serialTimer.Stop();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
         }
 
         private void openSerialButton_Click(object sender, EventArgs e)

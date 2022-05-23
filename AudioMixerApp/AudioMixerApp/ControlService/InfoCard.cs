@@ -15,12 +15,12 @@ namespace AudioMixerApp
 {
     public partial class InfoCard : UserControl
     {
-        private int _id;
-        
-        public void setId(int id)
+        public Deck deck { get; set; }
+
+        public void setId(int id, Deck deck)
         {
-            _id = id;
             title.Text = "Track " + id;
+            this.deck = deck;
         }
         
         public InfoCard()
@@ -33,17 +33,41 @@ namespace AudioMixerApp
             durationLabel.Text = FormatTimeSpan(duration);
             trackName.Text = Path.GetFileName(path);
             waveform.readWaveFile(path);
+            progressBar.Maximum = (int)duration.TotalMilliseconds;
+            progressBar.Value = 0;
         }
 
         public void UpdateWaveForm(TimeSpan time, double progress)
         {
             timeLabel.Text = FormatTimeSpan(time);
             waveform.DrawWave(progress);
+            progressBar.Value = (int)time.TotalMilliseconds;
         }
 
         private static string FormatTimeSpan(TimeSpan time)
         {
             return time.ToString("mm':'ss':'ff");
+        }
+
+        private bool isChangingPosition = false;
+
+        private void progressBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            isChangingPosition = true;
+        }
+
+        private void progressBar_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!isChangingPosition)
+                return;
+            double pos = (double)e.X / progressBar.Width;
+            pos = Math.Min(1.0, Math.Max(0.0, pos));
+            deck.move(pos);
+        }
+
+        private void progressBar_MouseUp(object sender, MouseEventArgs e)
+        {
+            isChangingPosition = false;
         }
     }
 }

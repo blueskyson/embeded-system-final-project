@@ -99,7 +99,7 @@ namespace AudioPlayerApp
             clock = new Stopwatch();
 
             // Pre-allocate buffers
-            audioBuffersRing = new AudioBuffer[3];
+            audioBuffersRing = new AudioBuffer[2];
             memBuffers = new DataPointer[audioBuffersRing.Length];
             for (int i = 0; i < audioBuffersRing.Length; i++)
             {

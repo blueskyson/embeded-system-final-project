@@ -35,8 +35,8 @@ namespace AudioMixerApp
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.trackName = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.waveform = new AudioMixerApp.ControlService.WaveForm();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // title
@@ -95,6 +95,18 @@ namespace AudioMixerApp
             this.trackName.TabIndex = 7;
             this.trackName.Text = "--";
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(96, 107);
+            this.progressBar.MarqueeAnimationSpeed = 0;
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(844, 23);
+            this.progressBar.Step = 1;
+            this.progressBar.TabIndex = 8;
+            this.progressBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.progressBar_MouseDown);
+            this.progressBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.progressBar_MouseMove);
+            this.progressBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.progressBar_MouseUp);
+            // 
             // waveform
             // 
             this.waveform.BackColor = System.Drawing.Color.Black;
@@ -105,18 +117,11 @@ namespace AudioMixerApp
             this.waveform.StartPosition = ((long)(0));
             this.waveform.TabIndex = 2;
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(96, 107);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(844, 23);
-            this.progressBar1.TabIndex = 8;
-            // 
             // InfoCard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.trackName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -138,6 +143,6 @@ namespace AudioMixerApp
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label trackName;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }

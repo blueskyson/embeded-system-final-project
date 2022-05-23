@@ -164,6 +164,16 @@ namespace AudioMixerApp
             }
         }
 
+        public void move(double pos)
+        {
+            // range of @pos: 0 to 1.0
+            lock (lockAudio) {
+                if (audioPlayer != null) {
+                    audioPlayer.Position = new TimeSpan((long)(audioPlayer.Duration.TotalMilliseconds * pos * 1e4));
+                }
+            }
+        }
+
         private void playIcon_Click(object sender, EventArgs e)
         {
             play();

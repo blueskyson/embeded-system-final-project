@@ -20,7 +20,13 @@ namespace AudioMixerApp
         private static int trackNum = 4;
         Deck[] decks;
         PictureBox[] selectPictures;
+
+        // Current track index that variable resistor points to
         int currentTrack = 0;
+
+        // uart communication rules
+        const int Adc = 0, Btn1 = 2, Btn2 = 1;
+        const String UseWinform = "A", UseStm32 = "B";
 
         public mainForm()
         {
@@ -46,6 +52,8 @@ namespace AudioMixerApp
             selectPictures[1] = select2;
             selectPictures[2] = select3;
 
+            audioSrcComboBox.SelectedIndex = 0;
+
             serialTimer.Stop();
         }
 
@@ -69,69 +77,75 @@ namespace AudioMixerApp
         private void serialTimer_Tick(object sender, EventArgs e)
         {
             string line = uart.ReadLines();
-            if (line != "") {
-                Console.Write(line);
+            if (line != "")
+            {
                 char[] rowSeparator = { '\n' };
                 string[] rows = line.Split(rowSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-                // only use row[0], drop other rows
-                char[] separator = { ' ' };
-                string[] dataString;
-                int[] data;
-                try {
-                    dataString = rows[0].Split(separator, StringSplitOptions.RemoveEmptyEntries);
-                    data = Array.ConvertAll(dataString, delegate (string s) {
-                        if (!Int32.TryParse(s, out int val))
+                for (int i = 0; i < rows.Length; i++)
+                {
+                    char[] separator = { ' ' };
+                    string[] dataString;
+                    int[] data;
+                    
+                    try {
+                        dataString = rows[i].Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                        data = Array.ConvertAll(dataString, delegate (string s)
                         {
-                            val = -1;
-                        }
-                        return val;
-                    });
-                } catch(Exception) {
-                    Console.WriteLine("Exception");
-                    return;
-                }
-
-                int Adc = 0, Btn1 = 2, Btn2 = 1;
-
-                if (data[0] == Adc)
-                {
-                    if (data.Length < 4)
+                            if (!Int32.TryParse(s, out int val))
+                            {
+                                val = -1;
+                            }
+                            return val;
+                        });
+                    }
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Exception");
                         return;
+                    }
 
-                    setCurrentTrack(data[3]);
-                    decks[currentTrack].changeVolume(data[2]);
-                    decks[currentTrack + 1].changeVolume(data[1]);
-                }
-                else if (data[0] == Btn1)
-                {
-                    if (data.Length < 2)
-                        return;
-                    if (data[1] == 0)
+                    if (data[0] == Adc)
                     {
-                        decks[currentTrack].pause();
-                    }
-                    else
-                    {
-                        decks[currentTrack].play();
-                    }
-                }
-                else if (data[0] == Btn2)
-                {
-                    if (data.Length < 2)
-                        return;
-                    if (data[1] == 0)
-                    {
-                        decks[currentTrack + 1].pause();
-                    }
-                    else
-                    {
-                        decks[currentTrack + 1].play();
-                    }
-                }
+                        if (data.Length < 4)
+                            return;
 
-
+                        setCurrentTrack(data[3]);
+                        decks[currentTrack].changeVolume(data[2]);
+                        decks[currentTrack + 1].changeVolume(data[1]);
+                    }
+                    else if (data[0] == Btn1)
+                    {
+                        if (data.Length < 2)
+                            return;
+                        Console.Write(line);
+                        //if (data[1] == 0)
+                        //{
+                        //    decks[currentTrack].pause();
+                        //}
+                        //else
+                        //{
+                        //    decks[currentTrack].play();
+                        //}
+                        decks[currentTrack].toggle();
+                    }
+                    else if (data[0] == Btn2)
+                    {
+                        if (data.Length < 2)
+                            return;
+                        //if (data[1] == 0)
+                        //{
+                        //    decks[currentTrack + 1].pause();
+                        //}
+                        //else
+                        //{
+                        //    decks[currentTrack + 1].play();
+                        //}
+                        decks[currentTrack + 1].toggle();
+                    }
+                }
             }
+
         }
 
         private void closeSerialButton_Click(object sender, EventArgs e)
@@ -142,6 +156,7 @@ namespace AudioMixerApp
             }
 
             serialTimer.Stop();
+            audioSrcComboBox.SelectedIndex = 0;
         }
 
         private void setCurrentTrack(int track)
@@ -151,6 +166,34 @@ namespace AudioMixerApp
             selectPictures[currentTrack].Visible = false;
             selectPictures[track].Visible = true;
             currentTrack = track;
+        }
+
+        private void audioSrcComboBox_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            Font myFont = new Font("Aerial", 10, FontStyle.Regular | FontStyle.Regular);
+
+            if (e.Index == 1 && uart == null) {
+                e.Graphics.DrawString(audioSrcComboBox.Items[e.Index].ToString(), myFont, Brushes.LightGray, e.Bounds);
+            } else {
+                e.DrawBackground();
+                e.Graphics.DrawString(audioSrcComboBox.Items[e.Index].ToString(), myFont, Brushes.Black, e.Bounds);
+                e.DrawFocusRectangle();
+            }
+        }
+
+        private void audioSrcComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (audioSrcComboBox.SelectedIndex == 1 && uart == null)
+                audioSrcComboBox.SelectedIndex = 0;
+
+            if (uart != null)
+            {
+                if (audioSrcComboBox.SelectedIndex == 0) {
+                    uart.Send(UseWinform);
+                } else if (audioSrcComboBox.SelectedIndex == 1) {
+                    uart.Send(UseStm32);
+                }
+            }
         }
     }
 }

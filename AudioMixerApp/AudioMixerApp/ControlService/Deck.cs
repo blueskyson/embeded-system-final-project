@@ -35,6 +35,7 @@ namespace AudioMixerApp
 
         private static int TrackbarMax = 150;
         private float volumeScale;
+        private AudioPlayerState state = AudioPlayerState.Stopped;
 
         public Deck()
         {
@@ -145,6 +146,7 @@ namespace AudioMixerApp
                     playIcon.Image = Properties.Resources.play2;
                     pauseIcon.Image = Properties.Resources.pause;
                     loadButton.Enabled = false;
+                    state = AudioPlayerState.Playing;
                 }
             }
         }
@@ -160,7 +162,17 @@ namespace AudioMixerApp
                     playIcon.Image = Properties.Resources.play;
                     pauseIcon.Image = Properties.Resources.pause2;
                     loadButton.Enabled = true;
+                    state = AudioPlayerState.Paused;
                 }
+            }
+        }
+
+        public void toggle()
+        {
+            if (state == AudioPlayerState.Playing) {
+                pause();
+            } else {
+                play();
             }
         }
 
@@ -199,6 +211,7 @@ namespace AudioMixerApp
                         timer.Stop();
                         playIcon.Image = Properties.Resources.play;
                         pauseIcon.Image = Properties.Resources.pause2;
+                        loadButton.Enabled = true;
                     }
                 }
             }

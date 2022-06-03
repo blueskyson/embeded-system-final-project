@@ -132,7 +132,7 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Start(uint8_t idx)
     f_lseek(&WavFile, 0);
     
     /* Fill whole buffer at first time */
-    if(f_read(&WavFile,&BufferCtl.buff[0],AUDIO_OUT_BUFFER_SIZE,(void *)&bytesread) == FR_OK)
+    if(f_read(&WavFile, &BufferCtl.buff[0], AUDIO_OUT_BUFFER_SIZE, (void *)&bytesread) == FR_OK)
     {
       AudioState = AUDIO_STATE_PLAY;
         if(bytesread != 0)

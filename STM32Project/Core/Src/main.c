@@ -101,9 +101,24 @@ void Task2(void *pvParameters);
 void Task3(void *pvParameters);
 
 // Task Id
-int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
+const int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
 
-int delayTime = 50;
+// Winform Command
+const char UseWinform = 'A', UseStm32 = 'B';
+
+// LED Pins
+#define GREEN GPIO_PIN_12
+#define ORANGE GPIO_PIN_13
+#define RED GPIO_PIN_14
+
+// Program states
+struct program_states {
+	char audioSource;
+	bool track1_state; // true: play, false: pause
+	bool track2_state; // true: play, false: pause
+} states;
+
+int delayTime = 20;
 
 void SD_RdWrTest(void)
 {
@@ -139,28 +154,34 @@ void button()
 	}
 }
 
+/* variable resistors task */
 void adc()
 {
 	bool press = false;
-	int current_track = 0; // 0 to 2
+	int current_track_index = 0; // 0 to 2
 	for (;;) {
+		if (states.audioSource == UseStm32) {
+			vTaskDelay(delayTime);
+			continue;
+		}
+
 		// Data Positions
 		if (ADCArray[2] > 4000) {
 			if (!press) {
-				current_track = (current_track == 2) ? 0 : current_track + 1;
+				current_track_index = (current_track_index == 2) ? 0 : current_track_index + 1;
 				press = true;
 			}
 		} else if (ADCArray[2] < 100) {
 			if (!press) {
-				current_track = (current_track == 0) ? 2 : current_track - 1;
+				current_track_index = (current_track_index == 0) ? 2 : current_track_index - 1;
 				press = true;
 			}
 		} else {
 			press = false;
 		}
 
-		// VariableResister0, VariableResister1, current_track
-		printf("%d %d %d %d\n", Adc, ADCArray[0], ADCArray[1], current_track);
+		// VariableResister0, VariableResister1, current_track_index
+		printf("%d %d %d %d\n", Adc, ADCArray[0], ADCArray[1], current_track_index);
 		vTaskDelay(delayTime);
 	}
 }
@@ -168,12 +189,16 @@ void adc()
 void button1()
 {
 	bool press = false;
-	bool state = false;
 	for (;;) {
+		if (states.audioSource == UseStm32) {
+			vTaskDelay(delayTime);
+			continue;
+		}
+
 		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET ) {
 			if (!press) {
-				state = (state) ? false : true;
-				printf("%d %d\n", Btn1, state);
+				states.track1_state = (states.track1_state) ? false : true;
+				printf("%d %d\n", Btn1, states.track1_state);
 				press = true;
 			}
 		}
@@ -187,12 +212,16 @@ void button1()
 void button2()
 {
 	bool press = false;
-	bool state = false;
 	for (;;) {
-		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_7) == GPIO_PIN_SET ) {
+		if (states.audioSource == UseStm32) {
+			vTaskDelay(delayTime);
+			continue;
+		}
+
+		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_7) == GPIO_PIN_SET) {
 			if (!press) {
-				state = (state) ? false : true;
-				printf("%d %d\n", Btn2, state);
+				states.track2_state = (states.track2_state) ? false : true;
+				printf("%d %d\n", Btn2, states.track2_state);
 				press = true;
 			}
 		}
@@ -203,14 +232,20 @@ void button2()
 	}
 }
 
-void joystick()
+/* communicate with winform */
+void recv_task()
 {
-	int press;
-	for (;;) {
-		press = (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_3) == GPIO_PIN_SET ) ? 1 : 0;
-		printf("%d %d\r\n", Joystick, ADCArray[2]);
-		vTaskDelay(delayTime);
-	}
+    for (;;) {
+        uint8_t receive;
+        while (HAL_UART_Receive(&huart2, &receive, 1, 1000) != HAL_OK);
+        if ((char)receive == UseWinform) {
+        	HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_RESET);
+        	states.audioSource = UseWinform;
+        } else if ((char)receive == UseStm32) {
+        	HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_SET);
+        	states.audioSource = UseStm32;
+        }
+    }
 }
 
 /* USER CODE END 0 */
@@ -281,10 +316,22 @@ int main(void)
 
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
 //	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);
+
+    /* Initialize LEDs */
+    HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOD, ORANGE, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOD, RED, GPIO_PIN_RESET);
+
+    /* Initialize program states */
+    states.audioSource = UseWinform;
+    states.track1_state = false;
+    states.track2_state = false;
+
   	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
   	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
   	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
-  	//xTaskCreate(joystick, "joystick", 500, NULL, 1, NULL);
+  	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
+
 //	xSemaphoreGive(xSemaphore1);
 	vTaskStartScheduler();
   /* USER CODE END 2 */

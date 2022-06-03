@@ -48,6 +48,8 @@ namespace AudioMixerApp
             this.select1 = new System.Windows.Forms.PictureBox();
             this.select2 = new System.Windows.Forms.PictureBox();
             this.select3 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.audioSrcComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.select1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.select2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.select3)).BeginInit();
@@ -60,7 +62,7 @@ namespace AudioMixerApp
             this.serialLine.Name = "serialLine";
             this.serialLine.Size = new System.Drawing.Size(100, 25);
             this.serialLine.TabIndex = 4;
-            this.serialLine.Text = "COM4";
+            this.serialLine.Text = "COM5";
             // 
             // label1
             // 
@@ -118,6 +120,7 @@ namespace AudioMixerApp
             // infoCard2
             // 
             this.infoCard2.AutoSize = true;
+            this.infoCard2.deck = null;
             this.infoCard2.Location = new System.Drawing.Point(12, 200);
             this.infoCard2.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard2.Name = "infoCard2";
@@ -127,6 +130,7 @@ namespace AudioMixerApp
             // infoCard1
             // 
             this.infoCard1.AutoSize = true;
+            this.infoCard1.deck = null;
             this.infoCard1.Location = new System.Drawing.Point(12, 51);
             this.infoCard1.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard1.Name = "infoCard1";
@@ -172,6 +176,7 @@ namespace AudioMixerApp
             // infoCard3
             // 
             this.infoCard3.AutoSize = true;
+            this.infoCard3.deck = null;
             this.infoCard3.Location = new System.Drawing.Point(12, 346);
             this.infoCard3.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard3.Name = "infoCard3";
@@ -181,6 +186,7 @@ namespace AudioMixerApp
             // infoCard4
             // 
             this.infoCard4.AutoSize = true;
+            this.infoCard4.deck = null;
             this.infoCard4.Location = new System.Drawing.Point(12, 492);
             this.infoCard4.MinimumSize = new System.Drawing.Size(500, 0);
             this.infoCard4.Name = "infoCard4";
@@ -220,11 +226,36 @@ namespace AudioMixerApp
             this.select3.TabStop = false;
             this.select3.Visible = false;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(548, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(89, 15);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Audio Source:";
+            // 
+            // audioSrcComboBox
+            // 
+            this.audioSrcComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.audioSrcComboBox.FormattingEnabled = true;
+            this.audioSrcComboBox.Items.AddRange(new object[] {
+            "Windows",
+            "STM32F407G"});
+            this.audioSrcComboBox.Location = new System.Drawing.Point(643, 9);
+            this.audioSrcComboBox.Name = "audioSrcComboBox";
+            this.audioSrcComboBox.Size = new System.Drawing.Size(122, 26);
+            this.audioSrcComboBox.TabIndex = 18;
+            this.audioSrcComboBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.audioSrcComboBox_DrawItem);
+            this.audioSrcComboBox.SelectedIndexChanged += new System.EventHandler(this.audioSrcComboBox_SelectedIndexChanged);
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1311, 635);
+            this.Controls.Add(this.audioSrcComboBox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.select3);
             this.Controls.Add(this.select2);
             this.Controls.Add(this.select1);
@@ -275,6 +306,8 @@ namespace AudioMixerApp
         private System.Windows.Forms.PictureBox select1;
         private System.Windows.Forms.PictureBox select2;
         private System.Windows.Forms.PictureBox select3;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox audioSrcComboBox;
     }
 }
 

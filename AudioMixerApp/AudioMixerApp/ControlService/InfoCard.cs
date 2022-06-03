@@ -61,7 +61,7 @@ namespace AudioMixerApp
             if (!isChangingPosition)
                 return;
             double pos = (double)e.X / progressBar.Width;
-            pos = Math.Min(1.0, Math.Max(0.0, pos));
+            pos = Math.Min(0.999, Math.Max(0.0, pos));
             deck.move(pos);
         }
 

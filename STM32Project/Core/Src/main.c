@@ -290,28 +290,28 @@ int main(void)
   {
          printf("ADC initialization error!\r\n");
   }
-//	xSemaphore1 = xSemaphoreCreateBinary();
-//	xSemaphore2 = xSemaphoreCreateBinary();
-//
-//	CardSize = SD_GetSectorCount();
-//
-//	CardSize = CardSize * SD_SECTOR_SIZE / 1024 / 1024;
-//
-//	printf("# SD Card Type:0x%02X\r\n", SD_Type);
-//	printf("# SD Card Size:%luMB\r\n", (uint32_t) CardSize);
-//	HAL_Delay(1000);
-//
-//
-//
-//	printf(
-//			"\r\n\r\n####################### HAL Libary SD Card SPI FATFS Demo ################################\r\n");
-//	MX_FATFS_Init();
-//	exf_mount();
-//	exf_getfree();
-//	FATFS_RdWrTest();
+	xSemaphore1 = xSemaphoreCreateBinary();
+	xSemaphore2 = xSemaphoreCreateBinary();
 
-//	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
-//	xTaskCreate(button, "button", 500, NULL, 1, NULL);
+	CardSize = SD_GetSectorCount();
+
+	CardSize = CardSize * SD_SECTOR_SIZE / 1024 / 1024;
+
+	printf("# SD Card Type:0x%02X\r\n", SD_Type);
+	printf("# SD Card Size:%luMB\r\n", (uint32_t) CardSize);
+	HAL_Delay(1000);
+
+
+
+	printf(
+			"\r\n\r\n####################### HAL Libary SD Card SPI FATFS Demo ################################\r\n");
+	MX_FATFS_Init();
+	exf_mount();
+	exf_getfree();
+	FATFS_RdWrTest();
+
+	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
+	xTaskCreate(button, "button", 500, NULL, 1, NULL);
 	/* How to use semaphore_binary in Lab3... */
 
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
@@ -327,10 +327,10 @@ int main(void)
     states.track1_state = false;
     states.track2_state = false;
 
-  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
-  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
-  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
-  	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
+//  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
+//  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
+//  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
+//  	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
 
 //	xSemaphoreGive(xSemaphore1);
 	vTaskStartScheduler();

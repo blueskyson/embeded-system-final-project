@@ -29,6 +29,7 @@
 #include "task.h"
 #include "File_Handling.h"
 #include "waveplayer.h"
+#include "AUDIO.h"
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -90,6 +91,7 @@ SemaphoreHandle_t xSemaphore1;
 SemaphoreHandle_t xSemaphore2;
 uint16_t ADCArray[4];
 int file;
+extern FILELIST_FileTypeDef FileList;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -159,6 +161,7 @@ void adc()
 {
 	bool press = false;
 	int current_track_index = 0; // 0 to 2
+
 	for (;;) {
 		if (states.audioSource == UseStm32) {
 			vTaskDelay(delayTime);
@@ -248,6 +251,13 @@ void recv_task()
     }
 }
 
+void list_files()
+{
+	for (int i = 0; i < AUDIO_GetWavObjectNumber(); i++) {
+		printf("%s\n", FileList.file[i].name);
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -313,6 +323,8 @@ int main(void)
 	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
 	xTaskCreate(button, "button", 500, NULL, 1, NULL);
 	/* How to use semaphore_binary in Lab3... */
+
+	list_files();
 
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
 //	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);

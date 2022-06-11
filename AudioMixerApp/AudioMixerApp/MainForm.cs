@@ -14,7 +14,7 @@ using AudioPlayerApp;
 
 namespace AudioMixerApp
 {
-    public partial class mainForm : Form
+    public partial class MainForm : Form
     {
         Uart uart;
         private static int trackNum = 4;
@@ -26,9 +26,11 @@ namespace AudioMixerApp
 
         // uart communication rules
         const int Adc = 0, Btn1 = 2, Btn2 = 1;
-        const String UseWinform = "A", UseStm32 = "B";
+        const String ListWavBegin = "3", ListWav = "4";
 
-        public mainForm()
+        public String UseWinform = "A", UseStm32 = "B";
+
+        public MainForm()
         {
             InitializeComponent();
             infoCard1.setId(1, deck1);
@@ -71,6 +73,15 @@ namespace AudioMixerApp
                 return;
             }
 
+            if (audioSrcComboBox.SelectedIndex == 0)
+            {
+                uart.Send(UseWinform);
+            }
+            else if (audioSrcComboBox.SelectedIndex == 1)
+            {
+                uart.Send(UseStm32);
+            }
+
             serialTimer.Start();
         }
 
@@ -88,8 +99,26 @@ namespace AudioMixerApp
                     string[] dataString;
                     int[] data;
                     
-                    try {
+                    try
+                    {
                         dataString = rows[i].Split(separator, StringSplitOptions.RemoveEmptyEntries);
+                    }
+                    catch (Exception)
+                    {
+                        return;
+                    }
+
+                    // Get SD Card WAV files
+                    if (dataString[0] == ListWavBegin) 
+                    {
+                        Console.WriteLine(rows[i]);
+                    }
+                    else if (dataString[0] == ListWav)
+                    {
+                        Console.WriteLine(rows[i]);
+                    }
+
+                    try {
                         data = Array.ConvertAll(dataString, delegate (string s)
                         {
                             if (!Int32.TryParse(s, out int val))
@@ -98,6 +127,7 @@ namespace AudioMixerApp
                             }
                             return val;
                         });
+                        
                     }
                     catch (Exception)
                     {
@@ -118,31 +148,15 @@ namespace AudioMixerApp
                     {
                         if (data.Length < 2)
                             return;
-                        Console.Write(line);
-                        //if (data[1] == 0)
-                        //{
-                        //    decks[currentTrack].pause();
-                        //}
-                        //else
-                        //{
-                        //    decks[currentTrack].play();
-                        //}
                         decks[currentTrack].toggle();
                     }
                     else if (data[0] == Btn2)
                     {
                         if (data.Length < 2)
                             return;
-                        //if (data[1] == 0)
-                        //{
-                        //    decks[currentTrack + 1].pause();
-                        //}
-                        //else
-                        //{
-                        //    decks[currentTrack + 1].play();
-                        //}
                         decks[currentTrack + 1].toggle();
                     }
+
                 }
             }
 
@@ -194,6 +208,19 @@ namespace AudioMixerApp
                     uart.Send(UseStm32);
                 }
             }
+        }
+
+        public String audioSource()
+        {
+            if (audioSrcComboBox.SelectedIndex == 0)
+            {
+                return UseWinform;
+            }
+            else if (audioSrcComboBox.SelectedIndex == 1)
+            {
+                return UseStm32;
+            }
+            return UseWinform;
         }
     }
 }

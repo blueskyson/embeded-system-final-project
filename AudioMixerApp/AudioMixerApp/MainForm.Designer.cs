@@ -1,7 +1,7 @@
 ﻿
 namespace AudioMixerApp
 {
-    partial class mainForm
+    partial class MainForm
     {
         /// <summary>
         /// 設計工具所需的變數。

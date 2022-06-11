@@ -79,57 +79,78 @@ namespace AudioMixerApp
 
         private void loadButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "Select audio file";
-            dialog.Filter = "wav (*.wav)|*.wav|mp3 (*.mp3)|*.mp3";
-            DialogResult res = dialog.ShowDialog();
-            if (res == DialogResult.OK) {
-                try
+            MainForm mainForm = this.Parent as MainForm;
+
+            // Load music from SD Card
+            if (mainForm.audioSource() == mainForm.UseStm32)
+            {
+                SDCardBrowser browser = new SDCardBrowser();
+                browser.ShowDialog();
+
+            }
+
+            // Load music from computer
+            else
+            {
+                OpenFileDialog dialog = new OpenFileDialog();
+                dialog.Title = "Select audio file";
+                dialog.Filter = "wav (*.wav)|*.wav|mp3 (*.mp3)|*.mp3";
+                DialogResult res = dialog.ShowDialog();
+                if (res == DialogResult.OK)
                 {
-                    lock (lockAudio)
+                    try
                     {
-                        if (audioPlayer != null) {
-                            audioPlayer.Stop();
-                            audioPlayer.Close();
-                            audioPlayer = null;
-                        }
-
-                        if (fileStream != null)
+                        lock (lockAudio)
                         {
-                            fileStream.Close();
-                            fileStream = null;
+                            if (audioPlayer != null)
+                            {
+                                audioPlayer.Stop();
+                                audioPlayer.Close();
+                                audioPlayer = null;
+                            }
+
+                            if (fileStream != null)
+                            {
+                                fileStream.Close();
+                                fileStream = null;
+                            }
+
+                            if (xaudio2 != null)
+                            {
+                                masteringVoice.Dispose();
+                                xaudio2.StopEngine();
+                                masteringVoice = null;
+                                xaudio2 = null;
+                            }
+
+                            // Starts The XAudio2 engine
+                            xaudio2 = new XAudio2();
+                            xaudio2.StartEngine();
+                            masteringVoice = new MasteringVoice(xaudio2);
+
+                            // Ask the user for a video or audio file to play
+                            fileStream = new NativeFileStream(dialog.FileName, NativeFileMode.Open, NativeFileAccess.Read);
+                            if (fileStream == null)
+                            {
+                                MessageBox.Show("Error reading file");
+                                return;
+                            }
+                            audioPlayer = new AudioPlayer(xaudio2, fileStream);
+
+                            // Draw infoCard
+                            infoCard.LoadWaveStream(dialog.FileName, audioPlayer.Duration);
                         }
-
-                        if (xaudio2 != null)
-                        {
-                            masteringVoice.Dispose();
-                            xaudio2.StopEngine();
-                            masteringVoice = null;
-                            xaudio2 = null;
-                        }
-
-                        // Starts The XAudio2 engine
-                        xaudio2 = new XAudio2();
-                        xaudio2.StartEngine();
-                        masteringVoice = new MasteringVoice(xaudio2);
-
-                        // Ask the user for a video or audio file to play
-                        fileStream = new NativeFileStream(dialog.FileName, NativeFileMode.Open, NativeFileAccess.Read);
-                        if (fileStream == null) {
-                            MessageBox.Show("Error reading file");
-                            return;
-                        }
-                        audioPlayer = new AudioPlayer(xaudio2, fileStream);
-
-                        // Draw infoCard
-                        infoCard.LoadWaveStream(dialog.FileName, audioPlayer.Duration);
                     }
-                } finally {
-                    playIcon.Image = Properties.Resources.play;
-                    pauseIcon.Image = Properties.Resources.pause2;
+                    finally
+                    {
+                        playIcon.Image = Properties.Resources.play;
+                        pauseIcon.Image = Properties.Resources.pause2;
+                    }
                 }
-            } else if (res == DialogResult.No) {
-                MessageBox.Show("Error opening file");
+                else if (res == DialogResult.No)
+                {
+                    MessageBox.Show("Error opening file");
+                }
             }
         }
 

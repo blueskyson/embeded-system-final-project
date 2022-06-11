@@ -104,6 +104,7 @@ void Task3(void *pvParameters);
 
 // Task Id
 const int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
+const int ListWavBegin = 3, ListWav = 4;
 
 // Winform Command
 const char UseWinform = 'A', UseStm32 = 'B';
@@ -247,14 +248,20 @@ void recv_task()
         } else if ((char)receive == UseStm32) {
         	HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_SET);
         	states.audioSource = UseStm32;
+        	list_files();
         }
     }
 }
 
+/*
+ *  Tasks for mixing on stm32
+ */
+
 void list_files()
 {
+	printf("%d\n", ListWavBegin);
 	for (int i = 0; i < AUDIO_GetWavObjectNumber(); i++) {
-		printf("%s\n", FileList.file[i].name);
+		printf("%d %s\n", ListWav, FileList.file[i].name);
 	}
 }
 
@@ -320,11 +327,9 @@ int main(void)
 	exf_getfree();
 	FATFS_RdWrTest();
 
-	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
-	xTaskCreate(button, "button", 500, NULL, 1, NULL);
+//	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
+//	xTaskCreate(button, "button", 500, NULL, 1, NULL);
 	/* How to use semaphore_binary in Lab3... */
-
-	list_files();
 
 //	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
 //	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);
@@ -339,10 +344,10 @@ int main(void)
     states.track1_state = false;
     states.track2_state = false;
 
-//  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
-//  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
-//  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
-//  	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
+  	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
+  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
+  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
+  	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
 
 //	xSemaphoreGive(xSemaphore1);
 	vTaskStartScheduler();
@@ -777,28 +782,6 @@ void Task2(void *pvParameters) {
 			xSemaphoreGive(xSemaphore1);
 		}
 	}
-}
-
-void Task3(void *pvParameters) {
-	int tmp = 2;
-	for (;;) {
-		int isFinished = 0;
-		AUDIO_PLAYER_Start(0);
-
-		while(!isFinished){
-			if (tmp != file) {
-				tmp = file;
-				AudioState = AUDIO_STATE_NEXT;
-			}
-			AUDIO_PLAYER_Process(pdTRUE);
-
-			if(AudioState == AUDIO_STATE_STOP){
-				isFinished = 1;
-			}
-		}
-//		AUDIO_PLAYER_Start(0);
-	}
-
 }
 
 

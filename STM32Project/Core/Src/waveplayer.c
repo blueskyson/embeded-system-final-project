@@ -68,7 +68,7 @@
 #include "File_Handling.h"
 #include "AUDIO.h"
 
-static uint32_t uwVolume = 70;
+static uint32_t uwVolume = 90;
 
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NO CHANGES AFTER THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
@@ -146,6 +146,8 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Start(uint8_t idx)
   * @param  None
   * @retval Audio error
   */
+
+
 AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
 {
   uint32_t bytesread;
@@ -162,23 +164,36 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     
     if(BufferCtl.state == BUFFER_OFFSET_HALF)
     {
-      if(f_read(&WavFile, &BufferCtl.buff[0], AUDIO_OUT_BUFFER_SIZE/2, (void *)&bytesread) != FR_OK)
+      if(f_read(&WavFile, &BufferCtl.buff[0], AUDIO_OUT_BUFFER_HALF_SIZE, (void *)&bytesread) != FR_OK)
       { 
         AUDIO_OUT_Stop(CODEC_PDWN_SW);
         return AUDIO_ERROR_IO;       
-      } 
+      }
+
+      int shift_amt = 16 - states.track1_volume;
+      int16_t *ptr = (int16_t*)&BufferCtl.buff[0];
+      for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
+    	  ptr[i] >>= shift_amt;
+      }
+
       BufferCtl.state = BUFFER_OFFSET_NONE;
       BufferCtl.fptr += bytesread; 
     }
     
     if(BufferCtl.state == BUFFER_OFFSET_FULL)
     {
-      if(f_read(&WavFile, &BufferCtl.buff[AUDIO_OUT_BUFFER_SIZE /2], AUDIO_OUT_BUFFER_SIZE/2, (void *)&bytesread) != FR_OK)
+      if(f_read(&WavFile, &BufferCtl.buff[AUDIO_OUT_BUFFER_HALF_SIZE], AUDIO_OUT_BUFFER_HALF_SIZE, (void *)&bytesread) != FR_OK)
       { 
         AUDIO_OUT_Stop(CODEC_PDWN_SW);
         return AUDIO_ERROR_IO;       
       } 
- 
+
+      int shift_amt = 16 - states.track1_volume;
+      int16_t *ptr = (int16_t*)&BufferCtl.buff[AUDIO_OUT_BUFFER_HALF_SIZE];
+      for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
+    	  ptr[i] >>= shift_amt;
+      }
+
       BufferCtl.state = BUFFER_OFFSET_NONE;
       BufferCtl.fptr += bytesread; 
     }
@@ -225,7 +240,7 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     AudioState = AUDIO_STATE_PLAY;
     break;
     
-  case AUDIO_STATE_VOLUME_UP: 
+  case AUDIO_STATE_VOLUME_UP:
     if( uwVolume <= 90)
     {
       uwVolume += 10;
@@ -233,8 +248,8 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     AUDIO_OUT_SetVolume(uwVolume);
     AudioState = AUDIO_STATE_PLAY;
     break;
-    
-  case AUDIO_STATE_VOLUME_DOWN:    
+
+  case AUDIO_STATE_VOLUME_DOWN:
     if( uwVolume >= 10)
     {
       uwVolume -= 10;
@@ -242,7 +257,7 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     AUDIO_OUT_SetVolume(uwVolume);
     AudioState = AUDIO_STATE_PLAY;
     break;
-    
+
   case AUDIO_STATE_WAIT:
   case AUDIO_STATE_IDLE:
   case AUDIO_STATE_INIT:    

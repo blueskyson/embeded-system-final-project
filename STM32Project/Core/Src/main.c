@@ -87,7 +87,7 @@ extern AUDIO_PLAYBACK_StateTypeDef AudioState;
 SemaphoreHandle_t xSemaphore;
 uint8_t flag = pdTRUE;
 uint8_t isFinished = 0;
-uint16_t ADCArray[4];
+
 int file;
 extern FILELIST_FileTypeDef FileList;
 /* USER CODE END PFP */
@@ -141,6 +141,8 @@ void adc()
 	for (;;) {
 		// Stm32 play
 		if (states.audioSource == UseStm32) {
+			states.track1_volume = (ADCArray[1] + 100) >> 8;
+			states.track2_volume = (ADCArray[0] + 100) >> 8;
 			vTaskDelay(delayTime);
 			continue;
 		}
@@ -312,7 +314,7 @@ void Stm32playTask(void *pvParameters) {
 				AUDIO_PLAYER_Process(pdTRUE);
 			}
 		} else {
-			AudioState = AUDIO_STATE_PAUSE;
+			AudioState = AUDIO_STATE_STOP;
 		}
 	}
 
@@ -400,7 +402,7 @@ int main(void)
     HAL_GPIO_WritePin(GPIOD, RED, GPIO_PIN_RESET);
 
     /* Initialize program states */
-    states.audioSource = UseWinform;
+    states.audioSource = UseStm32;
     states.track1_state = false;
     states.track2_state = false;
     states.track1_file_id = 1;

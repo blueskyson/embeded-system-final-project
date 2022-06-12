@@ -82,7 +82,8 @@
 /* Exported functions ------------------------------------------------------- */
 
 #define AUDIO_OUT_BUFFER_SIZE                      4096
-
+#define AUDIO_OUT_BUFFER_HALF_SIZE                 2048
+#define AUDIO_OUT_BUFFER_QUARTER_SIZE              1024
 
 typedef enum {
   AUDIO_ERROR_NONE = 0,

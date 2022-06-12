@@ -69,10 +69,14 @@ struct program_states {
 	char audioSource;
 	bool track1_state; // true: play, false: pause
 	int  track1_file_id;
+	int  track1_volume;
 
 	bool track2_state;
 	int  track2_file_id;
+	int  track2_volume;
 } states;
+
+uint16_t ADCArray[4];
 
 /* USER CODE END Private defines */
 

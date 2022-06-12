@@ -147,6 +147,8 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Init(void);
 AUDIO_ErrorTypeDef AUDIO_PLAYER_Start(uint8_t idx);
 AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop);
 AUDIO_ErrorTypeDef AUDIO_PLAYER_Stop(void);
+
+void load_track2();
 //void AUDIO_PlaybackProbeKey(JOYState_TypeDef state);
 
 #endif /* __WAVEPLAYER_H */

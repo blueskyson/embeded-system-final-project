@@ -245,11 +245,9 @@ void recv_task()
 
         if (setTrack1) {
         	states.track1_file_id = (uint8_t)receive - '0';
-        	printf("X 1 %d\n", states.track1_file_id);
         	setTrack1 = false;
         } else if (setTrack2) {
         	states.track2_file_id = (uint8_t)receive - '0';
-        	printf("X 2 %d\n", states.track1_file_id);
         	setTrack2 = false;
         }
 
@@ -323,26 +321,6 @@ void Stm32playTask(void *pvParameters) {
 	}
 
 }
-
-int file;
-void Task3(void *pvParameters) {
-    file = 0;
-	for (;;) {
-		int isFinished = 0;
-		AUDIO_PLAYER_Start(states.track1_file_id);
-
-		while(!isFinished){
-			AUDIO_PLAYER_Process(pdTRUE);
-
-			if(AudioState == AUDIO_STATE_PAUSE){
-				isFinished = 1;
-			}
-		}
-//		AUDIO_PLAYER_Start(0);
-	}
-
-}
-
 /* USER CODE END 0 */
 
 /**
@@ -410,16 +388,16 @@ int main(void)
     states.track1_state = false;
     states.track2_state = false;
     states.track1_file_id = 1;
-    states.track2_file_id = 2;
+    states.track2_file_id = 0;
 
     // Windows play
   	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
-  	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
-  	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
+  	xTaskCreate(button1, "button1", 200, NULL, 1, NULL);
+  	xTaskCreate(button2, "button2", 200, NULL, 1, NULL);
   	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
 
   	// Stm32 play
-  	xTaskCreate(Stm32playTask, "task3", 1000, NULL, 1, NULL);
+  	xTaskCreate(Stm32playTask, "task3", 1600, NULL, 1, NULL);
 
   	vTaskStartScheduler();
   /* USER CODE END 2 */

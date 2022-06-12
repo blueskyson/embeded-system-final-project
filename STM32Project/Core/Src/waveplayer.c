@@ -68,7 +68,7 @@
 #include "File_Handling.h"
 #include "AUDIO.h"
 
-static uint32_t uwVolume = 95;
+static uint32_t uwVolume = 55;
 
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NO CHANGES AFTER THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
@@ -204,7 +204,7 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     	}
     	else
     	{
-    		AudioState =AUDIO_STATE_STOP;
+    		AudioState = AUDIO_STATE_STOP;
     	}
     }
     AUDIO_OUT_Stop(CODEC_PDWN_SW);
@@ -299,4 +299,13 @@ void AUDIO_OUT_HalfTransfer_CallBack(void)
   }
 }
 
+//
+// Created by blueskyson
+//
+
+
+
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+
+

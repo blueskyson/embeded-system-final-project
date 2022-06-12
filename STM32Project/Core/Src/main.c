@@ -87,8 +87,6 @@ extern AUDIO_PLAYBACK_StateTypeDef AudioState;
 SemaphoreHandle_t xSemaphore;
 uint8_t flag = pdTRUE;
 uint8_t isFinished = 0;
-SemaphoreHandle_t xSemaphore1;
-SemaphoreHandle_t xSemaphore2;
 uint16_t ADCArray[4];
 int file;
 extern FILELIST_FileTypeDef FileList;
@@ -107,7 +105,7 @@ const int Adc = 0, Btn1 = 1, Btn2 = 2, Joystick = 3;
 const int ListWavBegin = 3, ListWav = 4;
 
 // Winform Command
-const char UseWinform = 'A', UseStm32 = 'B';
+const char UseWinform = 'A', UseStm32 = 'B', Stm32LoadTrack1 = 'C', Stm32LoadTrack2 = 'D';
 
 // LED Pins
 #define GREEN GPIO_PIN_12
@@ -118,10 +116,14 @@ const char UseWinform = 'A', UseStm32 = 'B';
 struct program_states {
 	char audioSource;
 	bool track1_state; // true: play, false: pause
-	bool track2_state; // true: play, false: pause
+	int  track1_file_id;
+
+	bool track2_state;
+	int  track2_file_id;
 } states;
 
-int delayTime = 20;
+int delayTime = 100;
+int longDelayTime = 500; // for performance
 
 void SD_RdWrTest(void)
 {
@@ -140,23 +142,6 @@ void SD_RdWrTest(void)
 			memcmp(bufr, bufw, sizeof(bufr)) == 0 ? "Successfully" : "Failed");
 }
 
-void button()
-{
-	bool press = false;
-	for (;;) {
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET ) {
-			if (!press) {
-				file = (file + 1) % 3;
-				press = true;
-			}
-		}
-		else {
-			press = false;
-		}
-		vTaskDelay(delayTime);
-	}
-}
-
 /* variable resistors task */
 void adc()
 {
@@ -164,11 +149,13 @@ void adc()
 	int current_track_index = 0; // 0 to 2
 
 	for (;;) {
+		// Stm32 play
 		if (states.audioSource == UseStm32) {
 			vTaskDelay(delayTime);
 			continue;
 		}
 
+		// Windows play
 		// Data Positions
 		if (ADCArray[2] > 4000) {
 			if (!press) {
@@ -194,15 +181,18 @@ void button1()
 {
 	bool press = false;
 	for (;;) {
-		if (states.audioSource == UseStm32) {
-			vTaskDelay(delayTime);
-			continue;
-		}
-
 		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET ) {
 			if (!press) {
-				states.track1_state = (states.track1_state) ? false : true;
-				printf("%d %d\n", Btn1, states.track1_state);
+				// Stm32 play
+				if (states.audioSource == UseStm32) {
+					printf("X%d\n", Btn2);
+					states.track2_state = (states.track2_state) ? false : true;
+				}
+
+				// Windows play
+				else {
+					printf("%d\n", Btn1);
+				}
 				press = true;
 			}
 		}
@@ -217,15 +207,17 @@ void button2()
 {
 	bool press = false;
 	for (;;) {
-		if (states.audioSource == UseStm32) {
-			vTaskDelay(delayTime);
-			continue;
-		}
-
 		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_7) == GPIO_PIN_SET) {
 			if (!press) {
-				states.track2_state = (states.track2_state) ? false : true;
-				printf("%d %d\n", Btn2, states.track2_state);
+				// Stm32 play
+				if (states.audioSource == UseStm32) {
+					states.track1_state = (states.track1_state) ? false : true;
+				}
+
+				// Windows play
+				else {
+					printf("%d\n", Btn2);
+				}
 				press = true;
 			}
 		}
@@ -236,12 +228,26 @@ void button2()
 	}
 }
 
-/* communicate with winform */
+/* communicate with Windows */
+
+// Don't call this function when playing music
+void list_files()
+{
+	printf("%d\n", ListWavBegin);
+	for (int i = 0; i < AUDIO_GetWavObjectNumber(); i++) {
+		printf("%d %s\n", ListWav, FileList.file[i].name);
+	}
+}
+
 void recv_task()
 {
     for (;;) {
         uint8_t receive;
-        while (HAL_UART_Receive(&huart2, &receive, 1, 1000) != HAL_OK);
+        while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
+        	vTaskDelay(longDelayTime);
+        	continue;
+        }
+
         if ((char)receive == UseWinform) {
         	HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_RESET);
         	states.audioSource = UseWinform;
@@ -249,20 +255,96 @@ void recv_task()
         	HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_SET);
         	states.audioSource = UseStm32;
         	list_files();
+        } else if ((char)receive == Stm32LoadTrack1) {
+        	while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
+        		vTaskDelay(longDelayTime);
+        	}
+        	states.track1_file_id = (int)((char)receive - '0');
+        } else if ((char)receive == Stm32LoadTrack2) {
+        	while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
+        		vTaskDelay(longDelayTime);
+        	}
+        	states.track2_file_id = (int)((char)receive - '0');
         }
     }
 }
 
-/*
- *  Tasks for mixing on stm32
- */
+//
+// Tasks for mixing on stm32
+//
 
-void list_files()
+
+
+void button()
 {
-	printf("%d\n", ListWavBegin);
-	for (int i = 0; i < AUDIO_GetWavObjectNumber(); i++) {
-		printf("%d %s\n", ListWav, FileList.file[i].name);
+	bool press = false;
+	for (;;) {
+		// Windows play
+//		if (states.audioSource == UseWinform) {
+//			vTaskDelay(delayTime);
+//			continue;
+//		}
+
+		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET ) {
+			if (!press) {
+				states.track1_state = true;
+				press = true;
+			}
+		} else {
+			press = false;
+		}
+		vTaskDelay(delayTime);
 	}
+}
+
+void Stm32playTask(void *pvParameters) {
+    bool is_playing = false;
+	for (;;) {
+		// Windows play
+		if (states.audioSource == UseWinform) {
+			vTaskDelay(delayTime);
+			continue;
+		}
+
+		// Stm32 play
+		if (states.track1_state == true) {
+			if (!is_playing) {
+				AUDIO_PLAYER_Start(states.track1_file_id);
+				is_playing = true;
+			} else {
+				if (AudioState == AUDIO_STATE_PAUSE) {
+					AudioState = AUDIO_STATE_RESUME;
+				} else if (AudioState == AUDIO_STATE_STOP) {
+					AUDIO_PLAYER_Stop();
+					is_playing = false;
+					states.track1_state = false;
+				}
+				AUDIO_PLAYER_Process(pdTRUE);
+			}
+		} else {
+			AudioState = AUDIO_STATE_PAUSE;
+		}
+	}
+
+}
+
+int file;
+void Task3(void *pvParameters) {
+    file = 0;
+	for (;;) {
+		int isFinished = 0;
+		AUDIO_PLAYER_Start(states.track1_file_id);
+
+		while(!isFinished){
+			AUDIO_PLAYER_Process(pdTRUE);
+
+			if(AudioState == AUDIO_STATE_STOP){
+				isFinished = 1;
+			}
+		}
+//		AUDIO_PLAYER_Start(0);
+	}
+
 }
 
 /* USER CODE END 0 */
@@ -303,36 +385,24 @@ int main(void)
   MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
-  if(HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADCArray, 4) != HAL_OK)
-  {
-         printf("ADC initialization error!\r\n");
+  if(HAL_ADC_Start_DMA(&hadc1, (uint32_t *)ADCArray, 4) != HAL_OK) {
+	  printf("ADC initialization error!\r\n");
   }
-	xSemaphore1 = xSemaphoreCreateBinary();
-	xSemaphore2 = xSemaphoreCreateBinary();
 
 	CardSize = SD_GetSectorCount();
-
 	CardSize = CardSize * SD_SECTOR_SIZE / 1024 / 1024;
 
-	printf("# SD Card Type:0x%02X\r\n", SD_Type);
-	printf("# SD Card Size:%luMB\r\n", (uint32_t) CardSize);
+//	printf("# SD Card Type:0x%02X\r\n", SD_Type);
+//	printf("# SD Card Size:%luMB\r\n", (uint32_t) CardSize);
 	HAL_Delay(1000);
 
-
-
-	printf(
-			"\r\n\r\n####################### HAL Libary SD Card SPI FATFS Demo ################################\r\n");
+//	printf("\r\n\r\n### HAL Libary SD Card SPI FATFS Demo ###\r\n");
 	MX_FATFS_Init();
 	exf_mount();
 	exf_getfree();
-	FATFS_RdWrTest();
 
-//	xTaskCreate(Task3, "task3", 500, NULL, 1, NULL);
-//	xTaskCreate(button, "button", 500, NULL, 1, NULL);
-	/* How to use semaphore_binary in Lab3... */
-
-//	xTaskCreate(Task1, "task1", 500, NULL, 1, NULL);
-//	xTaskCreate(Task2, "task2", 500, NULL, 1, NULL);
+	// This generates TEST.txt, which may cause error when playing music
+	// FATFS_RdWrTest();
 
     /* Initialize LEDs */
     HAL_GPIO_WritePin(GPIOD, GREEN, GPIO_PIN_RESET);
@@ -343,14 +413,19 @@ int main(void)
     states.audioSource = UseWinform;
     states.track1_state = false;
     states.track2_state = false;
+    states.track1_file_id = 1;
+    states.track2_file_id = 2;
 
+    // Windows play
   	xTaskCreate(adc, "adc", 500, NULL, 1, NULL);
   	xTaskCreate(button1, "button1", 500, NULL, 1, NULL);
   	xTaskCreate(button2, "button2", 500, NULL, 1, NULL);
   	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
 
-//	xSemaphoreGive(xSemaphore1);
-	vTaskStartScheduler();
+  	// Stm32 play
+  	xTaskCreate(Stm32playTask, "task3", 500, NULL, 1, NULL);
+
+  	vTaskStartScheduler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -726,65 +801,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void Task1(void *pvParameters) {
-	uint8_t count=0;
-
-	for (;;) {
-		if (xSemaphoreTake(xSemaphore1, (TickType_t)10) == pdTRUE) {
-			FIL test;
-			if (f_open(&test, "test.txt", FA_WRITE) != 0) {
-				printf("open file err in task1\r\n");
-			} else {
-				printf("file open ok in task1\r\n");
-			}
-
-			char buff[13];
-			memset(buff, 0, 13);
-			if(count%2){
-				sprintf(buff, "%s", "DataWriteT");
-			}else{
-				sprintf(buff, "%s", "DataWriteF");
-			}
-			UINT byteswrite;
-			f_write(&test, buff, 12, &byteswrite);
-			f_close(&test);
-			count++;
-
-			vTaskDelay(1);
-			xSemaphoreGive(xSemaphore2);
-		}
-	}
-
-}
-
-void Task2(void *pvParameters) {
-
-	while (1) {
-
-		if (xSemaphoreTake(xSemaphore2, (TickType_t)10) == pdTRUE) {
-			FIL test_1;
-			if (f_open(&test_1, "test.txt", FA_READ) != 0) {
-				printf("open file err in task2\r\n");
-			} else {
-				printf("file open ok in task2\r\n");
-			}
-
-			char buff[11];
-			memset(buff, 0, 11);
-			UINT bytesread;
-			f_read(&test_1, buff, 11, &bytesread);
-
-			printf("data read is %s in task 2\r\n", buff);
-
-			f_close(&test_1);
-
-			vTaskDelay(1);
-			xSemaphoreGive(xSemaphore1);
-		}
-	}
-}
-
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	BaseType_t xHigherPriorityTaskWoken;
 	if (GPIO_Pin == GPIO_PIN_0) {

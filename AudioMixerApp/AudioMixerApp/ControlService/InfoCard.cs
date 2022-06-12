@@ -16,9 +16,11 @@ namespace AudioMixerApp
     public partial class InfoCard : UserControl
     {
         public Deck deck { get; set; }
+        public int id { get; set; }
 
         public void setId(int id, Deck deck)
         {
+            this.id = id;
             title.Text = "Track " + id;
             this.deck = deck;
         }

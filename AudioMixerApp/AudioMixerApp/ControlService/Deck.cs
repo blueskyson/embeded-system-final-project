@@ -24,6 +24,7 @@ namespace AudioMixerApp
 {
     public partial class Deck : UserControl
     {
+
         public InfoCard infoCard { get; set; }
         private DispatcherTimer timer;
 
@@ -36,6 +37,9 @@ namespace AudioMixerApp
         private static int TrackbarMax = 150;
         private float volumeScale;
         private AudioPlayerState state = AudioPlayerState.Stopped;
+
+        // SD Card related variables
+        public int fileIndex = 0;
 
         public Deck()
         {
@@ -84,9 +88,12 @@ namespace AudioMixerApp
             // Load music from SD Card
             if (mainForm.audioSource() == mainForm.UseStm32)
             {
-                SDCardBrowser browser = new SDCardBrowser();
-                browser.ShowDialog();
-
+                SDCardBrowser browser = new SDCardBrowser(mainForm.SDCardFilenames, this);
+                DialogResult result = browser.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    mainForm.stm32LoadFile(infoCard.id, fileIndex);
+                }
             }
 
             // Load music from computer

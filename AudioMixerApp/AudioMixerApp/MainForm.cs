@@ -20,6 +20,7 @@ namespace AudioMixerApp
         private static int trackNum = 4;
         Deck[] decks;
         PictureBox[] selectPictures;
+        public List<String> SDCardFilenames;
 
         // Current track index that variable resistor points to
         int currentTrack = 0;
@@ -28,7 +29,7 @@ namespace AudioMixerApp
         const int Adc = 0, Btn1 = 2, Btn2 = 1;
         const String ListWavBegin = "3", ListWav = "4";
 
-        public String UseWinform = "A", UseStm32 = "B";
+        public String UseWinform = "A", UseStm32 = "B", Stm32LoadTrack1 = "C", Stm32LoadTrack2 = "D";
 
         public MainForm()
         {
@@ -99,6 +100,7 @@ namespace AudioMixerApp
                     string[] dataString;
                     int[] data;
                     
+                    // Parse by space
                     try
                     {
                         dataString = rows[i].Split(separator, StringSplitOptions.RemoveEmptyEntries);
@@ -111,13 +113,32 @@ namespace AudioMixerApp
                     // Get SD Card WAV files
                     if (dataString[0] == ListWavBegin) 
                     {
-                        Console.WriteLine(rows[i]);
+                        SDCardFilenames = new List<String>();
+                        continue;
                     }
                     else if (dataString[0] == ListWav)
+                    {
+                        // Constraint
+                        Console.WriteLine(rows[i]);
+                        if (SDCardFilenames.Count > 10 || dataString.Length < 2)
+                        {
+                            continue;
+                        }
+
+                        String fname = dataString[1];
+                        for (int j = 2; j < dataString.Length; j++)
+                        {
+                            fname += " " + dataString[j];
+                        }
+                        SDCardFilenames.Add(fname);
+                        continue;
+                    }
+                    else if (dataString[0] == "X")
                     {
                         Console.WriteLine(rows[i]);
                     }
 
+                    // Parse all strings to int
                     try {
                         data = Array.ConvertAll(dataString, delegate (string s)
                         {
@@ -132,13 +153,13 @@ namespace AudioMixerApp
                     catch (Exception)
                     {
                         Console.WriteLine("Exception");
-                        return;
+                        continue;
                     }
 
                     if (data[0] == Adc)
                     {
                         if (data.Length < 4)
-                            return;
+                            continue;
 
                         setCurrentTrack(data[3]);
                         decks[currentTrack].changeVolume(data[2]);
@@ -146,14 +167,10 @@ namespace AudioMixerApp
                     }
                     else if (data[0] == Btn1)
                     {
-                        if (data.Length < 2)
-                            return;
                         decks[currentTrack].toggle();
                     }
                     else if (data[0] == Btn2)
                     {
-                        if (data.Length < 2)
-                            return;
                         decks[currentTrack + 1].toggle();
                     }
 
@@ -181,6 +198,10 @@ namespace AudioMixerApp
             selectPictures[track].Visible = true;
             currentTrack = track;
         }
+
+        //
+        // For switching audio source between stm32 and windows
+        //
 
         private void audioSrcComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -221,6 +242,26 @@ namespace AudioMixerApp
                 return UseStm32;
             }
             return UseWinform;
+        }
+
+        //
+        // For telling stm32 which song to load
+        //
+        public void stm32LoadFile(int trackId, int fileId)
+        {
+            if (uart != null)
+            {
+                if (trackId == 1)
+                {
+                    String line = Stm32LoadTrack1 + fileId.ToString();
+                    uart.Send(line);
+                }
+                else if (trackId == 2)
+                {
+                    String line = Stm32LoadTrack2 + fileId.ToString();
+                    uart.Send(line);
+                }
+            }
         }
     }
 }

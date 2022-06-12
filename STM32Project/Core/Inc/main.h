@@ -28,6 +28,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stdbool.h"
 #include "stm32f4xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -62,6 +63,16 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
+
+// Program states
+struct program_states {
+	char audioSource;
+	bool track1_state; // true: play, false: pause
+	int  track1_file_id;
+
+	bool track2_state;
+	int  track2_file_id;
+} states;
 
 /* USER CODE END Private defines */
 

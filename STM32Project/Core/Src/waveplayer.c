@@ -68,7 +68,7 @@
 #include "File_Handling.h"
 #include "AUDIO.h"
 
-static uint32_t uwVolume = 55;
+static uint32_t uwVolume = 70;
 
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> NO CHANGES AFTER THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<*/
@@ -80,15 +80,10 @@ static uint32_t uwVolume = 55;
 
 
 static AUDIO_OUT_BufferTypeDef  BufferCtl;
-
 AUDIO_PLAYBACK_StateTypeDef AudioState;
-
 static int16_t FilePos = 0;
-
 FILELIST_FileTypeDef FileList;
-
 WAVE_FormatTypeDef WaveFormat;
-
 FIL WavFile;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -303,7 +298,24 @@ void AUDIO_OUT_HalfTransfer_CallBack(void)
 // Created by blueskyson
 //
 
+static AUDIO_OUT_BufferTypeDef  BufferCtl1;
+AUDIO_PLAYBACK_StateTypeDef AudioState1;
+static int16_t FilePos1 = 0;
+FILELIST_FileTypeDef FileList1;
+WAVE_FormatTypeDef WaveFormat1;
+FIL WavFile1;
 
+static AUDIO_OUT_BufferTypeDef  BufferCtl2;
+AUDIO_PLAYBACK_StateTypeDef AudioState2;
+static int16_t FilePos2 = 0;
+FILELIST_FileTypeDef FileList2;
+WAVE_FormatTypeDef WaveFormat2;
+FIL WavFile2;
+
+AUDIO_ErrorTypeDef my_audio_payer_process()
+{
+
+}
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

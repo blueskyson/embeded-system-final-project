@@ -112,16 +112,6 @@ const char UseWinform = 'A', UseStm32 = 'B', Stm32LoadTrack1 = 'C', Stm32LoadTra
 #define ORANGE GPIO_PIN_13
 #define RED GPIO_PIN_14
 
-// Program states
-struct program_states {
-	char audioSource;
-	bool track1_state; // true: play, false: pause
-	int  track1_file_id;
-
-	bool track2_state;
-	int  track2_file_id;
-} states;
-
 int delayTime = 100;
 int longDelayTime = 500; // for performance
 
@@ -423,7 +413,7 @@ int main(void)
   	xTaskCreate(recv_task, "recv_task", 500, NULL, 1, NULL);
 
   	// Stm32 play
-  	xTaskCreate(Stm32playTask, "task3", 500, NULL, 1, NULL);
+  	xTaskCreate(Stm32playTask, "task3", 1000, NULL, 1, NULL);
 
   	vTaskStartScheduler();
   /* USER CODE END 2 */

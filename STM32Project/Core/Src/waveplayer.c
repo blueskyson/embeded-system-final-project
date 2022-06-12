@@ -141,13 +141,50 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Start(uint8_t idx)
   return AUDIO_ERROR_IO;
 }
 
+static AUDIO_OUT_BufferTypeDef BufferCtl1;
+AUDIO_PLAYBACK_StateTypeDef AudioState1;
+static int16_t FilePos1 = 0;
+FILELIST_FileTypeDef FileList1;
+WAVE_FormatTypeDef WaveFormat1;
+FIL WavFile1;
+
+static AUDIO_OUT_BufferTypeDef BufferCtl2;
+AUDIO_PLAYBACK_StateTypeDef AudioState2;
+static int16_t FilePos2 = 0;
+FILELIST_FileTypeDef FileList2;
+WAVE_FormatTypeDef WaveFormat2;
+FIL WavFile2;
+
+void load_track1(int idx) {
+  uint bytesread;
+  f_close(&WavFile1);
+  f_open(&WavFile1, (char *)FileList.file[idx].name, FA_READ);
+  f_read(&WavFile1, &WaveFormat1, sizeof(WaveFormat1), &bytesread);
+
+  /*Adjust the Audio frequency */
+  PlayerInit(WaveFormat1.SampleRate);
+  BufferCtl1.state = BUFFER_OFFSET_NONE;
+  f_lseek(&WavFile1, 0);
+}
+
+void load_track2(int idx) {
+  uint bytesread;
+  f_close(&WavFile2);
+  f_open(&WavFile2, (char *)FileList.file[idx].name, FA_READ);
+  f_read(&WavFile2, &WaveFormat2, sizeof(WaveFormat2), &bytesread);
+
+  /*Adjust the Audio frequency */
+  PlayerInit(WaveFormat2.SampleRate);
+  BufferCtl2.state = BUFFER_OFFSET_NONE;
+  f_lseek(&WavFile2, 0);
+}
+
+
 /**
   * @brief  Manages Audio process. 
   * @param  None
   * @retval Audio error
   */
-
-
 AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
 {
   uint32_t bytesread;
@@ -231,6 +268,7 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     break;   
     
   case AUDIO_STATE_PAUSE:
+	memset(BufferCtl.buff, 0, AUDIO_OUT_BUFFER_SIZE);
     AUDIO_OUT_Pause();
     AudioState = AUDIO_STATE_WAIT;
     break;
@@ -309,23 +347,6 @@ void AUDIO_OUT_HalfTransfer_CallBack(void)
   }
 }
 
-//
-// Created by blueskyson
-//
-
-static AUDIO_OUT_BufferTypeDef  BufferCtl1;
-AUDIO_PLAYBACK_StateTypeDef AudioState1;
-static int16_t FilePos1 = 0;
-FILELIST_FileTypeDef FileList1;
-WAVE_FormatTypeDef WaveFormat1;
-FIL WavFile1;
-
-static AUDIO_OUT_BufferTypeDef  BufferCtl2;
-AUDIO_PLAYBACK_StateTypeDef AudioState2;
-static int16_t FilePos2 = 0;
-FILELIST_FileTypeDef FileList2;
-WAVE_FormatTypeDef WaveFormat2;
-FIL WavFile2;
 
 AUDIO_ErrorTypeDef my_audio_payer_process()
 {

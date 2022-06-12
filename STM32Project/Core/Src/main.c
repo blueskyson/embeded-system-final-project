@@ -233,11 +233,24 @@ void list_files()
 
 void recv_task()
 {
+	bool setTrack1 = false;
+	bool setTrack2 = false;
+
     for (;;) {
         uint8_t receive;
-        while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
+        if (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
         	vTaskDelay(longDelayTime);
         	continue;
+        }
+
+        if (setTrack1) {
+        	states.track1_file_id = (uint8_t)receive - '0';
+        	printf("X 1 %d\n", states.track1_file_id);
+        	setTrack1 = false;
+        } else if (setTrack2) {
+        	states.track2_file_id = (uint8_t)receive - '0';
+        	printf("X 2 %d\n", states.track1_file_id);
+        	setTrack2 = false;
         }
 
         if ((char)receive == UseWinform) {
@@ -248,15 +261,9 @@ void recv_task()
         	states.audioSource = UseStm32;
         	list_files();
         } else if ((char)receive == Stm32LoadTrack1) {
-        	while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
-        		vTaskDelay(longDelayTime);
-        	}
-        	states.track1_file_id = (int)((char)receive - '0');
+        	setTrack1 = true;
         } else if ((char)receive == Stm32LoadTrack2) {
-        	while (HAL_UART_Receive(&huart2, &receive, 1, 1) != HAL_OK) {
-        		vTaskDelay(longDelayTime);
-        	}
-        	states.track2_file_id = (int)((char)receive - '0');
+        	setTrack2 = true;
         }
     }
 }
@@ -264,9 +271,6 @@ void recv_task()
 //
 // Tasks for mixing on stm32
 //
-
-
-
 void button()
 {
 	bool press = false;
@@ -314,7 +318,7 @@ void Stm32playTask(void *pvParameters) {
 				AUDIO_PLAYER_Process(pdTRUE);
 			}
 		} else {
-			AudioState = AUDIO_STATE_STOP;
+			AudioState = AUDIO_STATE_PAUSE;
 		}
 	}
 
@@ -330,7 +334,7 @@ void Task3(void *pvParameters) {
 		while(!isFinished){
 			AUDIO_PLAYER_Process(pdTRUE);
 
-			if(AudioState == AUDIO_STATE_STOP){
+			if(AudioState == AUDIO_STATE_PAUSE){
 				isFinished = 1;
 			}
 		}
@@ -402,7 +406,7 @@ int main(void)
     HAL_GPIO_WritePin(GPIOD, RED, GPIO_PIN_RESET);
 
     /* Initialize program states */
-    states.audioSource = UseStm32;
+    states.audioSource = UseWinform;
     states.track1_state = false;
     states.track2_state = false;
     states.track1_file_id = 1;

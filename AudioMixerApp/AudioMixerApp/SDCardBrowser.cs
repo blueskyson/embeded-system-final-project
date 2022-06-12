@@ -18,9 +18,12 @@ namespace AudioMixerApp
         {
             InitializeComponent();
             wavList.Items.Clear();
-            foreach (String fname in fnames)
+            if (fnames != null)
             {
-                wavList.Items.Add(fname);
+                foreach (String fname in fnames)
+                {
+                    wavList.Items.Add(fname);
+                }
             }
             parentDeck = deck;
             

@@ -29,7 +29,7 @@ namespace AudioMixerApp
         const int Adc = 0, Btn1 = 2, Btn2 = 1;
         const String ListWavBegin = "3", ListWav = "4";
 
-        public String UseWinform = "A", UseStm32 = "B", Stm32LoadTrack1 = "C", Stm32LoadTrack2 = "D";
+        public String UseWinform = "A-", UseStm32 = "B-", Stm32LoadTrack1 = "C", Stm32LoadTrack2 = "D";
 
         public MainForm()
         {
@@ -253,13 +253,15 @@ namespace AudioMixerApp
             {
                 if (trackId == 1)
                 {
-                    String line = Stm32LoadTrack1 + fileId.ToString();
-                    uart.Send(line);
+                    uart.Send(Stm32LoadTrack1);
+                    Thread.Sleep(500);
+                    uart.Send(fileId.ToString());
                 }
                 else if (trackId == 2)
                 {
-                    String line = Stm32LoadTrack2 + fileId.ToString();
-                    uart.Send(line);
+                    uart.Send(Stm32LoadTrack2);
+                    Thread.Sleep(500);
+                    uart.Send(fileId.ToString());
                 }
             }
         }

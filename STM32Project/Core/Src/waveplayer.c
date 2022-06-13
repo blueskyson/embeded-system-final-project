@@ -142,7 +142,6 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Start(uint8_t idx)
 	  }
     }
 
-//    f_open(&WavFile2, (char *)FileList.file[states.track2_file_id].name, FA_READ);
     BufferCtl2.fptr = 0;
   }
   return AUDIO_ERROR_IO;
@@ -186,9 +185,9 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     	  int16_t *ptr2 = (int16_t*)&BufferCtl2.buff[0];
     	  shift_amt+=1;
     	  int shift_amt2 = 17 - states.track2_volume;
-//    	  for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
-//		     ptr[i] = (ptr[i] >> shift_amt);
-//		  }
+    	  for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
+		     ptr[i] = (ptr[i] >> shift_amt) + (ptr2[i] >> shift_amt2);
+		  }
       }
 
       BufferCtl.state = BUFFER_OFFSET_NONE;
@@ -213,9 +212,9 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     	  int16_t *ptr2 = (int16_t*)&BufferCtl2.buff[AUDIO_OUT_BUFFER_HALF_SIZE];
     	  shift_amt+=1;
     	  int shift_amt2 = 17 - states.track2_volume;
-//    	  for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
-//		     ptr[i] = (ptr[i] >> shift_amt);
-//		  }
+    	  for (int i = 0; i < AUDIO_OUT_BUFFER_QUARTER_SIZE; i++) {
+		     ptr[i] = (ptr[i] >> shift_amt) + (ptr2[i] >> shift_amt2);
+		  }
       }
 
       BufferCtl.state = BUFFER_OFFSET_NONE;
@@ -224,8 +223,9 @@ AUDIO_ErrorTypeDef AUDIO_PLAYER_Process(bool isLoop)
     }
     else {
 		if (states.track2_state == true && half_flag && full_flag) {
+
 		  uint32_t bytesread2;
-		  f_open(&WavFile2, (char *)FileList.file[states.track1_file_id].name, FA_READ);
+		  f_open(&WavFile2, (char *)FileList.file[states.track2_file_id].name, FA_READ);
 		  f_lseek(&WavFile2, BufferCtl2.fptr);
 		  f_read(&WavFile2, &BufferCtl2.buff[0], AUDIO_OUT_BUFFER_SIZE, (void *)&bytesread2);
 		  f_close(&WavFile2);

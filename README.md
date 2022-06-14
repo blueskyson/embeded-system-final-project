@@ -1,4 +1,7 @@
-# STM32F407G Audio Mixer
+# STM32F407G Audio Mixer 雙音軌混音控制器
+
+- F74076027 林政傑
+- F74071069 林霆寬
 
 ## Environment Setup
 

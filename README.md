@@ -3,6 +3,8 @@
 - F74076027 林政傑
 - F74071069 林霆寬
 
+Demo: https://www.youtube.com/watch?v=khOr-KAI_O8
+
 ![](./demo.png)
 
 ## Environment Setup

@@ -1,9 +1,9 @@
-# STM32F407G Audio Mixer 雙音軌混音控制器
+# STM32F407G Dual Track Mixing Controller
 
-- F74076027 林政傑
-- F74071069 林霆寬
+- F74076027 Cheng-Chieh Lin
+- F74071069 Jason Lin
 
-Demo: https://www.youtube.com/watch?v=khOr-KAI_O8
+Demo (Mandarin): https://www.youtube.com/watch?v=khOr-KAI_O8
 
 ![](./demo.png)
 
